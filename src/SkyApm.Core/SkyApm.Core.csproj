@@ -79,10 +79,6 @@
       <Project>{3a0ff730-3c89-447b-b635-d993de1367ec}</Project>
       <Name>SkyApm.Infrastructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SkyWalking.NetworkProtocol\SkyWalking.NetworkProtocol.csproj">
-      <Project>{ba6bd56c-4a6c-413d-bbca-e9f3d2b2ded2}</Project>
-      <Name>SkyWalking.NetworkProtocol</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
