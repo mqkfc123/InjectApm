@@ -27,6 +27,10 @@ Build your own **plugins** using CInject information
    * Exceptions and errors
 * Customized Plugin menu in CInject application
 
+https://github.com/punitganshani/CodeInject
+
+https://github.com/SkyAPM/SkyAPM-dotnet
+
 ## FAQ
 
 **Can I use it in my organization?**
