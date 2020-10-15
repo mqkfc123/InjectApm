@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FD92845E-20BA-4519-9C70-F14A7C2D4131}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CInject.Injections</RootNamespace>
+    <AssemblyName>CInject.Injections</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Autofac, Version=4.2.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.2.1\lib\net45\Autofac.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard1.1\System.Buffers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.2\lib\netstandard1.1\System.Memory.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Attributes\DependentFiles.cs" />
+    <Compile Include="Startup.cs" />
+    <Compile Include="Injectors\LogInject.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Injectors\ObjectValueInject.cs" />
+    <Compile Include="Injectors\PerformanceInject.cs" />
+    <Compile Include="ICInject.cs" />
+    <Compile Include="Library\CInjection.cs" />
+    <Compile Include="Library\Converter.cs" />
+    <Compile Include="Library\Logger.cs" />
+    <Compile Include="Library\ReflectionHelper.cs" />
+    <Compile Include="Library\Serializer.cs" />
+    <Compile Include="Models\CallInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="LogInject.log4net.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ObjectSearch.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\src\SkyApm.Abstractions\SkyApm.Abstractions.csproj">
+      <Project>{f49466c8-531b-4119-abf3-1edeed1df128}</Project>
+      <Name>SkyApm.Abstractions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\src\SkyApm.Core\SkyApm.Core.csproj">
+      <Project>{61d1f0a0-2bff-4283-b270-0d50cb2c5f13}</Project>
+      <Name>SkyApm.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\src\SkyApm.Infrastructure\SkyApm.Infrastructure.csproj">
+      <Project>{3a0ff730-3c89-447b-b635-d993de1367ec}</Project>
+      <Name>SkyApm.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\src\SkyApm.Transport.Grpc\SkyApm.Transport.Grpc.csproj">
+      <Project>{b58c0ca2-a713-44fe-95c3-7a5ce9e71c22}</Project>
+      <Name>SkyApm.Transport.Grpc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\src\SkyWalking.NetworkProtocol\SkyWalking.NetworkProtocol.csproj">
+      <Project>{ba6bd56c-4a6c-413d-bbca-e9f3d2b2ded2}</Project>
+      <Name>SkyWalking.NetworkProtocol</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>REM copy "$(TargetPath)" "$(SolutionDir)Test Directory\$(TargetFileName)"
+REM copy "$(TargetDir)$(TargetFileName).config" "$(SolutionDir)Test Directory\$(TargetFileName).config"
+REM copy "$(TargetDir)LogInject.log4net.xml" "$(SolutionDir)Test Directory\LogInject.log4net.xml"
+
+</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

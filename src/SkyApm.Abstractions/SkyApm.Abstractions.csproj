@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F49466C8-531B-4119-ABF3-1EDEED1DF128}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SkyApm.Abstractions</RootNamespace>
+    <AssemblyName>SkyApm.Abstractions</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Common\NullableValue.cs" />
+    <Compile Include="Common\StringOrIntValue.cs" />
+    <Compile Include="Common\Tags.cs" />
+    <Compile Include="Config\ConfigAttribute.cs" />
+    <Compile Include="Config\IConfigAccessor.cs" />
+    <Compile Include="Config\InstrumentConfig.cs" />
+    <Compile Include="Config\SamplingConfig.cs" />
+    <Compile Include="Config\TransportConfig.cs" />
+    <Compile Include="ExecutionService.cs" />
+    <Compile Include="IEnvironmentProvider.cs" />
+    <Compile Include="IExecutionService.cs" />
+    <Compile Include="IInstrumentStartup.cs" />
+    <Compile Include="IRuntimeEnvironment.cs" />
+    <Compile Include="Logging\ILogger.cs" />
+    <Compile Include="Logging\ILoggerFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tracing\ICarrier.cs" />
+    <Compile Include="Tracing\ICarrierFormatter.cs" />
+    <Compile Include="Tracing\ICarrierHeaderCollection.cs" />
+    <Compile Include="Tracing\ICarrierPropagator.cs" />
+    <Compile Include="Tracing\ISegmentContextFactory.cs" />
+    <Compile Include="Tracing\ITracingContext.cs" />
+    <Compile Include="Tracing\IUniqueIdGenerator.cs" />
+    <Compile Include="Tracing\Segments\SegmentContext.cs" />
+    <Compile Include="Tracing\Segments\SegmentReference.cs" />
+    <Compile Include="Tracing\Segments\SegmentSpan.cs" />
+    <Compile Include="Tracing\UniqueId.cs" />
+    <Compile Include="Transport\AgentOsInfoRequest.cs" />
+    <Compile Include="Transport\CLRStatsRequest.cs" />
+    <Compile Include="Transport\ICLRStatsReporter.cs" />
+    <Compile Include="Transport\IPingCaller.cs" />
+    <Compile Include="Transport\ISegmentContextMapper.cs" />
+    <Compile Include="Transport\ISegmentDispatcher.cs" />
+    <Compile Include="Transport\ISegmentReporter.cs" />
+    <Compile Include="Transport\IServiceRegister.cs" />
+    <Compile Include="Transport\PingRequest.cs" />
+    <Compile Include="Transport\SegmentRequest.cs" />
+    <Compile Include="Transport\ServiceInstanceRequest.cs" />
+    <Compile Include="Transport\ServiceRequest.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
