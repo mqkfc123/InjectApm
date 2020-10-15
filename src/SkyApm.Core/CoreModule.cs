@@ -50,7 +50,6 @@ namespace SkyApm.Core
 
             builder.RegisterType<RuntimeEnvironment>().As<IRuntimeEnvironment>().SingleInstance();
             builder.RegisterType<InstrumentStartup>().As<IInstrumentStartup>().SingleInstance();
-
         }
 
         #endregion Overrides of Module
