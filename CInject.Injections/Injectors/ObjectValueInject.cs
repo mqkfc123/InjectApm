@@ -63,7 +63,7 @@ namespace CInject.Injections.Injectors
                         method = string.Format("Method {0} Argument #{1} :{2}= {3}", injection.Method.Name, key, propertyName, dictionary[key] ?? "<null>");
                         Logger.Debug(method);
 
-                        value += propertyName + "=" + dictionary[key] ?? "<null> /r/n ";
+                        value += propertyName + "=" + dictionary[key] ?? "<null> ";
                     }
 
                     _context.Span.AddLog(LogEvent.Event($"{injection.Method.Name} :{value}"));
