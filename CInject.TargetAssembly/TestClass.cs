@@ -11,7 +11,7 @@ namespace CInject.TargetAssembly
     public class TestClass
     {
         public string Name { get; set; }
-        public delegate void MyDelegate();
+        public delegate void MyDelegate(); 
 
         public TestClass(string name)
         {
