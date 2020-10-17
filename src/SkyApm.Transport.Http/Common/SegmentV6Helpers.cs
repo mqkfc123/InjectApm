@@ -4,7 +4,7 @@ using SkyApm.Transport.Http.Entity;
 using System;
 using System.Linq;
 
-namespace SkyApm.Transport.Grpc.Common
+namespace SkyApm.Transport.Http.Common
 {
 
     internal static class SegmentV6Helpers

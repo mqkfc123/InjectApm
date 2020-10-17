@@ -23,4 +23,20 @@ namespace SkyApm.Transport.Http.Entity
         CrossProcess = 0,
         CrossThread = 1
     }
+
+    public enum ServiceType
+    {
+       
+        Normal = 0,
+      
+        Database = 1,
+    
+        Mq = 2,
+      
+        Cache = 3,
+       
+        Browser = 4,
+    }
+
+
 }

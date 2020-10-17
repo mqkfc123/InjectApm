@@ -1,9 +1,12 @@
-﻿using SkyApm.Abstractions.Config;
+﻿using SkyApm.Abstractions.Common;
+using SkyApm.Abstractions.Config;
 using SkyApm.Abstractions.Transport;
 using SkyApm.Infrastructure.Configuration;
 using SkyApm.Logging;
+using SkyApm.Transport.Http.Common;
 using SkyApm.Transport.Http.Entity;
 using System;
+using System.Collections.Generic;
 
 namespace SkyApm.Transport.Grpc.V6
 {
@@ -12,7 +15,8 @@ namespace SkyApm.Transport.Grpc.V6
     {
         private readonly ILogger _logger;
         private readonly GrpcConfig _config;
-
+        private const string heartbeat = "/v2/instance/heartbeat";
+        
         public PingCaller(ILoggerFactory loggerFactory,
             IConfigAccessor configAccessor)
         {
@@ -22,13 +26,30 @@ namespace SkyApm.Transport.Grpc.V6
 
         public void PingAsync(PingRequest request)
         {
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var t3 = Convert.ToInt64((DateTime.Now - epoch).TotalMilliseconds);
+
             var serviceInstancePingPkg = new ServiceInstancePingPkg
             {
                 serviceInstanceId = request.ServiceInstanceId,
                 serviceInstanceUUID = request.InstanceId,
-                time = DateTimeOffset.UtcNow.UtcTicks  //DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+                time = t3  //DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
             };
 
+            Dictionary<string, object> param = new Dictionary<string, object>();
+            param.Add("InstancePingPkg", serviceInstancePingPkg);
+
+            //http 请求
+            var result = HttpHelper.PostMode(_config.Servers + heartbeat, Newtonsoft.Json.JsonConvert.SerializeObject(param));
+            if (string.IsNullOrEmpty(result))
+            {
+              
+            }
+            else
+            {
+                List<KeyStringValuePair> values = Newtonsoft.Json.JsonConvert.DeserializeObject<List<KeyStringValuePair>>(result);
+             
+            }
         }
 
     }

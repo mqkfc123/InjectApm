@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using SkyApm.Core;
+using System.Windows.Forms;
 
 namespace CInject.SampleWinform
 {
@@ -13,6 +14,10 @@ namespace CInject.SampleWinform
             //    builder.RegisterModule<AutofacModule>();
             //});
             //coreBuilder.Build();
+
+            InstrumentStartup startup = new InstrumentStartup();
+            startup.StartAsync();
+
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

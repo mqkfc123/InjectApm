@@ -1,5 +1,5 @@
 ﻿
-namespace SkyApm.Transport.Grpc.Common
+namespace SkyApm.Transport.Http.Common
 {
     internal static class ExceptionHelpers
     {

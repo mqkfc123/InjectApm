@@ -19,7 +19,7 @@ namespace SkyApm.Core
 
     public class InstrumentStartup : IInstrumentStartup
     {
-        private readonly List<IExecutionService> _services;
+        private readonly List<IExecutionService> _services = new List<IExecutionService>();
         private readonly ILogger _logger;
 
         public InstrumentStartup()

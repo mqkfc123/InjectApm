@@ -1,4 +1,5 @@
 ﻿using NLog;
+using NLog.Config;
 using SkyApm.Logging;
 using System;
 using System.Collections.Generic;
@@ -12,12 +13,12 @@ namespace SkyApm.Infrastructure.Logging
 
         public NLoggerFactory()
         {
-            //LogManager.LoadConfiguration($"{AppDomain.CurrentDomain.BaseDirectory}NLog.config");
+            LogManager.Configuration= new XmlLoggingConfiguration($"{AppDomain.CurrentDomain.BaseDirectory}NLog.config");
         }
 
         public ILogger CreateLogger(Type type)
         {
-            return new NLogger(LogManager.GetCurrentClassLogger(type));
+            return new NLogger(LogManager.GetCurrentClassLogger());
         }
 
     }

@@ -65,6 +65,9 @@ namespace SkyApm.Core.Transport
        
             while (index++ < limit)
             {
+                if (_segmentQueue.Count <= 0)
+                    continue;
+
                 segments.Add(_segmentQueue.Dequeue());
                 Interlocked.Decrement(ref _offset);
             }

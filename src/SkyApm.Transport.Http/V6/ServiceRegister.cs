@@ -3,6 +3,7 @@ using SkyApm.Abstractions.Config;
 using SkyApm.Abstractions.Transport;
 using SkyApm.Infrastructure.Configuration;
 using SkyApm.Logging;
+using SkyApm.Transport.Http.Common;
 using SkyApm.Transport.Http.Entity;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,9 @@ namespace SkyApm.Transport.Grpc.V6
         private readonly ILogger _logger;
         private readonly GrpcConfig _config;
 
+        private const string register = "/v2/service/register";
+        private const string instanceRegister = "/v2/instance/register";
+
         public ServiceRegister(IConfigAccessor configAccessor,
             ILoggerFactory loggerFactory)
         {
@@ -34,18 +38,35 @@ namespace SkyApm.Transport.Grpc.V6
 
             var service = new Service
             {
-                serviceName = serviceRequest.ServiceName
+                serviceName = serviceRequest.ServiceName,
+                type = ServiceType.Normal.ToString()
             };
             services.Add(service);
 
-            //http 请求
+            Dictionary<string, object> param = new Dictionary<string, object>();
 
-            return NullableValue.Null;
+            param.Add("services", services);
+            
+            //http 请求
+            var result= HttpHelper.PostMode(_config.Servers + register,Newtonsoft.Json.JsonConvert.SerializeObject(param));
+            if (string.IsNullOrEmpty(result))
+            {
+                return NullableValue.Null;
+            }
+            else
+            {
+                List<KeyStringValuePair> values = Newtonsoft.Json.JsonConvert.DeserializeObject<List<KeyStringValuePair>>(result);
+                return new NullableValue(Convert.ToInt32(values[0].value));
+            }
         }
 
 
         public NullableValue RegisterServiceInstanceAsync(ServiceInstanceRequest serviceInstanceRequest)
         {
+
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var t3 = Convert.ToInt64((DateTime.Now - epoch).TotalMilliseconds);
+
 
             var instances = new List<ServiceInstance>();
             
@@ -53,7 +74,7 @@ namespace SkyApm.Transport.Grpc.V6
             {
                 serviceId = serviceInstanceRequest.ServiceId,
                 instanceUUID = serviceInstanceRequest.InstanceUUID,
-                time = DateTimeOffset.UtcNow.UtcTicks
+                time = t3
             };
 
             List<KeyStringValuePair> properties = new List<KeyStringValuePair>();
@@ -71,12 +92,25 @@ namespace SkyApm.Transport.Grpc.V6
             {
                 properties.Add(new KeyStringValuePair { key = IPV4, value = ip });
             }
-
+            instance.properties = properties;
             instances.Add(instance);
 
 
-            return NullableValue.Null;
+            Dictionary<string, object> param = new Dictionary<string, object>();
+            param.Add("instances", instances);
 
+            //http 请求
+            var result = HttpHelper.PostMode(_config.Servers + instanceRegister, Newtonsoft.Json.JsonConvert.SerializeObject(param));
+            if (string.IsNullOrEmpty(result))
+            {
+                return NullableValue.Null;
+            }
+            else
+            {
+                List<KeyStringValuePair> values = Newtonsoft.Json.JsonConvert.DeserializeObject<List<KeyStringValuePair>>(result);
+                return new NullableValue(Convert.ToInt32(values[0].value));
+            }
+             
         }
 
     }
