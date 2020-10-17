@@ -9,7 +9,7 @@ namespace SkyApm.Transport.Http.Entity
     {
         public List<UniqueId> globalTraceIds { get; set; }
 
-        public SegmentObject segment { get; set; }
+        public byte[] segment { get; set; }
     }
     [Serializable]
     public class SegmentObject
