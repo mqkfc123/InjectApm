@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using CInject.Engine.Data;
 using CInject.Engine.Extensions;
 using CInject.Injections;
@@ -9,7 +8,7 @@ using CInject.Engine.Utils;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using CInject.Injections.Library;
-using System.Diagnostics; 
+using System.Diagnostics;
 
 namespace CInject.Engine.Resolvers
 {
@@ -31,7 +30,7 @@ namespace CInject.Engine.Resolvers
             : base(path)
         {
             string directory = System.IO.Path.GetDirectoryName(path);
-            
+
             DefaultAssemblyResolver assemblyResolver = new DefaultAssemblyResolver();
             assemblyResolver.AddSearchDirectory(directory);
 
@@ -39,17 +38,17 @@ namespace CInject.Engine.Resolvers
 
             _assembly = AssemblyDefinition.ReadAssembly(path, readerParams);
 
-            _cinjection = Assembly.ImportType<CInjection>();
-            _cinjectionCtor = Assembly.ImportConstructor<CInjection>();
+            _cinjection = MonoExtensions.ImportType<CInjection>(Assembly);
+            _cinjectionCtor = MonoExtensions.ImportConstructor<CInjection>(Assembly);
 
-            _methodGetCurrentMethod = Assembly.ImportMethod<System.Reflection.MethodBase>("GetCurrentMethod");
-            _methodSetMethod = Assembly.ImportMethod<CInjection>("set_Method");
+            _methodGetCurrentMethod = MonoExtensions.ImportMethod<System.Reflection.MethodBase>(Assembly, "GetCurrentMethod");
+            _methodSetMethod = MonoExtensions.ImportMethod<CInjection>(Assembly, "set_Method");
 
-            _methodGetExecutingAssembly = Assembly.ImportMethod<System.Reflection.Assembly>("GetExecutingAssembly");
-            _methodSetExecutingAssembly = Assembly.ImportMethod<CInjection>("set_ExecutingAssembly");
+            _methodGetExecutingAssembly = MonoExtensions.ImportMethod<System.Reflection.Assembly>(Assembly, "GetExecutingAssembly");
+            _methodSetExecutingAssembly = MonoExtensions.ImportMethod<CInjection>(Assembly, "set_ExecutingAssembly");
 
-            _methodGetArguments = Assembly.ImportMethod<CInjection>("get_Arguments");
-            _methodSetArguments = Assembly.ImportMethod<CInjection>("set_Arguments");
+            _methodGetArguments = MonoExtensions.ImportMethod<CInjection>(Assembly, "get_Arguments");
+            _methodSetArguments = MonoExtensions.ImportMethod<CInjection>(Assembly, "set_Arguments");
         }
 
         public AssemblyDefinition Assembly
@@ -64,10 +63,22 @@ namespace CInject.Engine.Resolvers
 
             foreach (var type in _assembly.MainModule.Types)
             {
-                if (type.Interfaces.Count(x => x.FullName == "CInject.Injections.Interfaces.ICInject") > 0)
+                //type.Interfaces.Count
+
+                var v1 = false;
+                foreach (var item in type.Interfaces)
+                {
+                    if (item.FullName == "CInject.Injections.Interfaces.ICInject")
+                    {
+                        v1 = true;
+                    }
+                }
+
+                if (v1)
                 {
                     injectionTypes.Add(type);
                 }
+
             }
 
             return injectionTypes;
@@ -75,21 +86,44 @@ namespace CInject.Engine.Resolvers
 
         internal List<TypeDefinition> FindStaticClasses()
         {
-            return _assembly.MainModule.Types.Where(type => type.Methods.Count(x => x.IsStatic) > 0).ToList();
-        }
+            List<TypeDefinition> typeDefinitions = new List<TypeDefinition>();
 
-        public  List<TypeDefinition> FindClasses()
-        {
-            return _assembly.MainModule.Types.Where(x => x.IsClass).ToList();
-        }
-
-        public  bool Inject(Type type)
-        {
-            if (Assembly.MainModule.GetRuntime() != type.Assembly.GetRuntime())
+            foreach (var type in _assembly.MainModule.Types)
             {
-                SendMessage("Injector and Target Assembly have different CLR versions! Can not proceed.", MessageType.Error);
-                return false;
+                var isStatic = false;
+                foreach (var item in type.Methods)
+                {
+                    if (item.IsStatic)
+                        isStatic = true;
+                }
+                if (isStatic)
+                    typeDefinitions.Add(type);
             }
+
+            return typeDefinitions;
+        }
+
+        public List<TypeDefinition> FindClasses()
+        {
+            List<TypeDefinition> typeDefinitions = new List<TypeDefinition>();
+
+            foreach (var type in _assembly.MainModule.Types)
+            {
+                if (type.IsClass)
+                    typeDefinitions.Add(type);
+            }
+
+            return typeDefinitions;
+
+        }
+
+        public bool Inject(Type type)
+        {
+            //if (Assembly.MainModule.GetRuntime() != type.Assembly.GetRuntime())
+            //{
+            //    SendMessage("Injector and Target Assembly have different CLR versions! Can not proceed.", MessageType.Error);
+            //    return false;
+            //}
 
             var injection = CreateInjection(type);
 
@@ -103,10 +137,10 @@ namespace CInject.Engine.Resolvers
             var injection = new Injection
             {
                 InjectionType = type,
-                OnInvoke = Assembly.ImportMethod(type, "OnInvoke"),
-                Constructor = Assembly.ImportConstructor(type),
-                TypeReference = Assembly.ImportType(type),
-                OnComplete = Assembly.ImportMethod(type, "OnComplete"),
+                OnInvoke = MonoExtensions.ImportMethod(Assembly, type, "OnInvoke"),
+                Constructor = MonoExtensions.ImportConstructor(Assembly, type),
+                TypeReference = MonoExtensions.ImportType(Assembly, type),
+                OnComplete = MonoExtensions.ImportMethod(Assembly, type, "OnComplete"),
             };
             return injection;
         }
@@ -134,11 +168,11 @@ namespace CInject.Engine.Resolvers
         public bool Inject(MethodDefinition methodDefinition, Type type)
         {
             bool success = true;
-            if (Assembly.MainModule.GetRuntime() != type.Assembly.GetRuntime())
-            {
-                SendMessage("Injector and Target Assembly have different CLR versions! Can not proceed.", MessageType.Error);
-                return false;
-            }
+            //if (Assembly.MainModule.GetRuntime() != type.Assembly.GetRuntime())
+            //{
+            //    SendMessage("Injector and Target Assembly have different CLR versions! Can not proceed.", MessageType.Error);
+            //    return false;
+            //}
 
             var injection = CreateInjection(type);
 
@@ -148,7 +182,6 @@ namespace CInject.Engine.Resolvers
             }
             catch
             {
-
             }
 
             if (injection.InjectionType.Name == "Startup")
@@ -191,10 +224,17 @@ namespace CInject.Engine.Resolvers
                 var constructor = injection.Constructor;
                 constructor.Resolve();
 
-                bool isInjected = method.Body.Variables.Count(x => x.VariableType.Scope == injection.TypeReference.Scope
-                                                                && x.VariableType.FullName == injection.TypeReference.FullName
-                                                                && x.VariableType.Namespace == injection.TypeReference.Namespace) > 0;
-
+                bool isInjected = false;
+                foreach (var x in method.Body.Variables)
+                {
+                    if (x.VariableType.Scope == injection.TypeReference.Scope
+                        && x.VariableType.FullName == injection.TypeReference.FullName
+                        && x.VariableType.Namespace == injection.TypeReference.Namespace)
+                    {
+                        isInjected = true;
+                    }
+                }
+               
                 if (isInjected) // already injected
                 {
                     SendMessage("Already injected method " + method.Name + " with " + injection.TypeReference.Name, MessageType.Warning);
@@ -205,7 +245,7 @@ namespace CInject.Engine.Resolvers
 
                 VariableDefinition vInject = editor.AddVariable(injection.TypeReference);
                 VariableDefinition vInjection = editor.AddVariable(_cinjection);
-                VariableDefinition vObjectArray = editor.AddVariable(Assembly.ImportType<object[]>());
+                VariableDefinition vObjectArray = editor.AddVariable(MonoExtensions.ImportType<object[]>(Assembly));
 
                 Instruction firstExistingInstruction = method.Body.Instructions[0];
 
@@ -240,7 +280,7 @@ namespace CInject.Engine.Resolvers
                     // create array of object (arguments)
                     editor.InsertBefore(firstExistingInstruction, editor.Create(OpCodes.Ldloc_S, vInjection));
                     editor.InsertBefore(firstExistingInstruction, editor.Create(OpCodes.Ldc_I4, method.Parameters.Count));
-                    editor.InsertBefore(firstExistingInstruction, editor.Create(OpCodes.Newarr, Assembly.ImportType<object>()));
+                    editor.InsertBefore(firstExistingInstruction, editor.Create(OpCodes.Newarr, MonoExtensions.ImportType<object>(Assembly)));
                     editor.InsertBefore(firstExistingInstruction, editor.Create(OpCodes.Stloc_S, vObjectArray));
 
                     for (int i = 0; i < method.Parameters.Count; i++)
@@ -329,7 +369,16 @@ namespace CInject.Engine.Resolvers
                 #endregion
 
                 #region OnComplete
-                Instruction[] exitInstructions = method.Body.Instructions.Where(x => x.OpCode == OpCodes.Ret).ToArray();
+                var exitInstruction = new List<Instruction>();
+                foreach (var x in method.Body.Instructions)
+                {
+                    if (x.OpCode == OpCodes.Ret)
+                    {
+                        exitInstruction.Add(x);
+                    }
+                }
+
+                Instruction[] exitInstructions = exitInstruction.ToArray();
 
                 for (int i = 0; i < exitInstructions.Length; i++)
                 {
@@ -379,16 +428,23 @@ namespace CInject.Engine.Resolvers
                 var constructor = injection.Constructor;
                 constructor.Resolve();
 
-                bool isInjected = method.Body.Variables.Count(x => x.VariableType.Scope == injection.TypeReference.Scope
-                                                                && x.VariableType.FullName == injection.TypeReference.FullName
-                                                                && x.VariableType.Namespace == injection.TypeReference.Namespace) > 0;
+                bool isInjected = false;
+                foreach (var x in method.Body.Variables)
+                {
+                    if (x.VariableType.Scope == injection.TypeReference.Scope
+                        && x.VariableType.FullName == injection.TypeReference.FullName
+                        && x.VariableType.Namespace == injection.TypeReference.Namespace)
+                    {
+                        isInjected = true;
+                    }
+                }
 
 
                 MethodInjector editor = new MethodInjector(method);
 
                 VariableDefinition vInject = editor.AddVariable(injection.TypeReference);
                 VariableDefinition vInjection = editor.AddVariable(_cinjection);
-                VariableDefinition vObjectArray = editor.AddVariable(Assembly.ImportType<object[]>());
+                VariableDefinition vObjectArray = editor.AddVariable(MonoExtensions.ImportType<object[]>(Assembly));
 
                 Instruction firstExistingInstruction = method.Body.Instructions[0];
 
@@ -400,7 +456,7 @@ namespace CInject.Engine.Resolvers
                 editor.InsertBefore(firstExistingInstruction, editor.Create(OpCodes.Ldloc_S, vInject));
                 editor.InsertBefore(firstExistingInstruction, editor.Create(OpCodes.Callvirt, injection.OnInvoke));
                 #endregion
-                 
+
 
                 method.Resolve();
 

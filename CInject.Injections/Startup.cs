@@ -1,11 +1,4 @@
-﻿using Autofac;
-using SkyApm.Core;
-using SkyApm.Transport.Grpc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SkyApm.Core;
 
 namespace CInject.Injections
 {
@@ -18,12 +11,14 @@ namespace CInject.Injections
 
         public void OnInvoke()
         {
-            var coreBuilder = new CoreBuilder();
-            coreBuilder.OnStarting(builder =>
-            {
-                builder.RegisterModule<GrpcModule>();
-            });
-            coreBuilder.Build();
+            //var coreBuilder = new CoreBuilder();
+            //coreBuilder.OnStarting(builder =>
+            //{
+            //    builder.RegisterModule<GrpcModule>();
+            //});
+            //coreBuilder.Build();
+            InstrumentStartup startup = new InstrumentStartup();
+            startup.StartAsync();
         }
 
         public void OnComplete()

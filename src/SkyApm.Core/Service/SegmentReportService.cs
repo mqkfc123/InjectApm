@@ -4,10 +4,8 @@ using SkyApm.Abstractions.Transport;
 using SkyApm.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SkyApm.Core.Service
 {
@@ -32,15 +30,14 @@ namespace SkyApm.Core.Service
 
         protected override TimeSpan Period { get; }
 
-        protected override Task ExecuteAsync(CancellationToken cancellationToken)
+        protected override void ExecuteAsync()
         {
-            return _dispatcher.Flush(cancellationToken);
+             _dispatcher.Flush();
         }
 
-        protected override Task Stopping(CancellationToken cancellationToke)
+        protected override void Stopping()
         {
             _dispatcher.Close();
-            return Task.CompletedTask;
         }
     }
 }

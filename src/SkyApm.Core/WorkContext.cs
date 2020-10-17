@@ -1,10 +1,13 @@
-﻿using Autofac;
+﻿
+using SkyApm.Abstractions.Tracing;
 
 namespace SkyApm.Core
 {
-    public sealed class WorkContext
+    public class WorkContext
     {
-        public static ILifetimeScope LifetimeScope { get; set; }
+      
+        public static ITracingContext TracingContext { get; set; } 
+
     }
 
 }

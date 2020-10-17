@@ -2,9 +2,7 @@
 using SkyApm.Abstractions.Tracing.Segments;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SkyApm.Core.Tracing
 {
@@ -23,7 +21,7 @@ namespace SkyApm.Core.Tracing
 
         public void Inject(SegmentContext segmentContext, ICarrierHeaderCollection headerCollection)
         {
-            var reference = segmentContext.References.FirstOrDefault();
+            var reference = segmentContext.References.GetEnumerator().Current;
 
             var carrier = new Carrier(segmentContext.TraceId, segmentContext.SegmentId, segmentContext.Span.SpanId,
                 segmentContext.ServiceInstanceId, reference?.EntryServiceInstanceId ?? segmentContext.ServiceInstanceId)
@@ -48,7 +46,7 @@ namespace SkyApm.Core.Tracing
             {
                 return carrier;
             }
-            foreach (var formatter in _carrierFormatters.OrderByDescending(x => x.Key))
+            foreach (var formatter in _carrierFormatters)
             {
                 if (!formatter.Enable)
                 {

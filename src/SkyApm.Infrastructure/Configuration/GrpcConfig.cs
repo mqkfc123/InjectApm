@@ -1,9 +1,5 @@
-﻿using Grpc.Core;
-using SkyApm.Abstractions.Config;
+﻿using SkyApm.Abstractions.Config;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace SkyApm.Infrastructure.Configuration
 {
@@ -39,14 +35,14 @@ namespace SkyApm.Infrastructure.Configuration
             return DateTime.UtcNow.AddMilliseconds(config.ReportTimeout);
         }
 
-        public static Metadata GetMeta(this GrpcConfig config)
-        {
-            if (string.IsNullOrEmpty(config.Authentication))
-            {
-                return null;
-            }
-            return new Metadata { new Metadata.Entry("Authentication", config.Authentication) };
-        }
+        //public static Metadata GetMeta(this GrpcConfig config)
+        //{
+        //    if (string.IsNullOrEmpty(config.Authentication))
+        //    {
+        //        return null;
+        //    }
+        //    return new Metadata { new Metadata.Entry("Authentication", config.Authentication) };
+        //}
 
     }
 

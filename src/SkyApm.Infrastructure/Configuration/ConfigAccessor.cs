@@ -62,9 +62,9 @@ namespace SkyApm.Infrastructure.Configuration
 
             var path = Path.Combine("SkyApm", "SkyApmSettings.json");
 
-            if (!Directory.Exists(Path.Combine("SkyApm")))
+            if (!Directory.Exists(Path.Combine("SkyApm","")))
             {
-                Directory.CreateDirectory(Path.Combine("SkyApm"));
+                Directory.CreateDirectory(Path.Combine("SkyApm", ""));
             }
 
             if (!File.Exists(path))

@@ -7,16 +7,16 @@ using SkyApm.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SkyApm.Core.Service
 {
 
     public class RegisterService : ExecutionService
     {
+        private delegate NullableValue Execute();
+
         private readonly InstrumentConfig _config;
         private readonly IServiceRegister _serviceRegister;
         private readonly TransportConfig _transportConfig;
@@ -37,13 +37,13 @@ namespace SkyApm.Core.Service
         protected override bool CanExecute() =>
             _transportConfig.ProtocolVersion == ProtocolVersions.V6 && !RuntimeEnvironment.Initialized;
 
-        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+        protected override void ExecuteAsync()
         {
-            await RegisterServiceAsync(cancellationToken);
-            await RegisterServiceInstanceAsync(cancellationToken);
+            RegisterServiceAsync();
+            RegisterServiceInstanceAsync();
         }
 
-        private async Task RegisterServiceAsync(CancellationToken cancellationToken)
+        private void RegisterServiceAsync()
         {
             if (!RuntimeEnvironment.ServiceId.HasValue)
             {
@@ -52,22 +52,19 @@ namespace SkyApm.Core.Service
                     ServiceName = _config.ServiceName
                 };
 
-                var value = await Polling(3,
-                    () => _serviceRegister.RegisterServiceAsync(request, cancellationToken),
-                    cancellationToken);
+                var value = Polling(3,
+                    () => _serviceRegister.RegisterServiceAsync(request));
 
                 if (value.HasValue && RuntimeEnvironment is RuntimeEnvironment)
                 {
                     var environment = (RuntimeEnvironment)RuntimeEnvironment;
-
                     environment.ServiceId = value;
                     Logger.Information($"Registered Service[Id={environment.ServiceId.Value}].");
                 }
-
             }
         }
 
-        private async Task RegisterServiceInstanceAsync(CancellationToken cancellationToken)
+        private void RegisterServiceInstanceAsync()
         {
             if (RuntimeEnvironment.ServiceId.HasValue && !RuntimeEnvironment.ServiceInstanceId.HasValue)
             {
@@ -85,9 +82,8 @@ namespace SkyApm.Core.Service
                     InstanceUUID = RuntimeEnvironment.InstanceId.ToString("N"),
                     Properties = properties
                 };
-                var value = await Polling(3,
-                    () => _serviceRegister.RegisterServiceInstanceAsync(request, cancellationToken),
-                    cancellationToken);
+                var value = Polling(3,
+                    () => _serviceRegister.RegisterServiceInstanceAsync(request));
 
                 if (value.HasValue && RuntimeEnvironment is RuntimeEnvironment)
                 {
@@ -97,21 +93,21 @@ namespace SkyApm.Core.Service
                     Logger.Information($"Registered ServiceInstance[Id={environment.ServiceInstanceId.Value}].");
                 }
             }
+
         }
 
-        private static async Task<NullableValue> Polling(int retry, Func<Task<NullableValue>> execute,
-            CancellationToken cancellationToken)
+        private static NullableValue Polling(int retry, Execute execute)
         {
             var index = 0;
             while (index++ < retry)
             {
-                var value = await execute();
+                var value = execute();
                 if (value.HasValue)
                 {
                     return value;
                 }
 
-                await Task.Delay(500, cancellationToken);
+                Thread.Sleep(500);
             }
 
             return NullableValue.Null;

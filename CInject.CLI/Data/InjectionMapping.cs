@@ -68,7 +68,7 @@ namespace CInject.CLI.Data
             }
             else
             {
-                method = type.GetMethodDefinition(projMapping.MethodName, projMapping.MethodParameters);
+                method = MonoExtensions.GetMethodDefinition(type,projMapping.MethodName, projMapping.MethodParameters);
                 CacheStore.Add<MethodDefinition>(classNameKey + projMapping.MethodName, method);
             }
 

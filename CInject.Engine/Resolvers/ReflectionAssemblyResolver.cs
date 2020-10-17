@@ -25,7 +25,7 @@ namespace CInject.Engine.Resolvers
 
         public List<Type> FindTypes<T1>()
         {
-            return _assembly.GetType<T1>();
+            return ReflectionExtensions.GetType<T1>(_assembly);
         }
     }
 }

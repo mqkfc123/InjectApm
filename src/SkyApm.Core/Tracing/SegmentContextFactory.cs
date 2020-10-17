@@ -4,9 +4,7 @@ using SkyApm.Abstractions.Tracing;
 using SkyApm.Abstractions.Tracing.Segments;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SkyApm.Core.Tracing
 {
@@ -61,7 +59,7 @@ namespace SkyApm.Core.Tracing
 
             if (parentSegmentContext != null)
             {
-                var parentReference = parentSegmentContext.References.FirstOrDefault();
+                var parentReference = parentSegmentContext.References.GetEnumerator().Current;
                 var reference = new SegmentReference
                 {
                     Reference = Reference.CrossThread,
@@ -91,7 +89,8 @@ namespace SkyApm.Core.Tracing
 
             if (parentSegmentContext != null)
             {
-                var parentReference = parentSegmentContext.References.FirstOrDefault();
+                 
+               var parentReference = parentSegmentContext.References.GetEnumerator().Current;
                 var reference = new SegmentReference
                 {
                     Reference = Reference.CrossThread,

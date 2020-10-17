@@ -2,9 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SkyApm.Abstractions.Tracing.Segments
 {
@@ -35,11 +33,19 @@ namespace SkyApm.Abstractions.Tracing.Segments
 
     public class SegmentReferenceCollection : IEnumerable<SegmentReference>
     {
-        private readonly HashSet<SegmentReference> _references = new HashSet<SegmentReference>();
+        private readonly List<SegmentReference> _references = new List<SegmentReference>();
 
         public bool Add(SegmentReference reference)
         {
-            return _references.Add(reference);
+            try
+            {
+                _references.Add(reference);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public IEnumerator<SegmentReference> GetEnumerator()

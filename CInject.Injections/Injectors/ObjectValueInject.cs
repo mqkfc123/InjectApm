@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using CInject.Injections.Attributes;
-using CInject.Injections;
 using CInject.Injections.Library;
 using System.IO;
 using SkyApm.Abstractions.Tracing;
 using SkyApm.Core.Tracing;
 using SkyApm.Abstractions.Tracing.Segments;
 using SkyApm.Core;
-using Autofac;
 
 namespace CInject.Injections.Injectors
 {
@@ -21,7 +18,7 @@ namespace CInject.Injections.Injectors
 
         public ObjectValueInject()
         {
-            _tracingContext = WorkContext.LifetimeScope.Resolve<ITracingContext>();
+            _tracingContext = WorkContext.TracingContext;
         }
 
         public class ObjectSearch

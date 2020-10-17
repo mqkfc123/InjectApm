@@ -34,10 +34,10 @@ namespace CInject.Engine.Utils
         private void UpdateReferences(Instruction instruction, Instruction replaceBy)
         {
             if (_methodBody.Instructions.Count > 0)
-                _methodBody.Instructions.UpdateReferences(instruction, replaceBy);
+                MonoExtensions.UpdateReferences(_methodBody.Instructions,instruction, replaceBy);
 
             if (_methodBody.ExceptionHandlers.Count > 0)
-                _methodBody.ExceptionHandlers.UpdateReferences(instruction, replaceBy);
+                MonoExtensions.UpdateReferences(_methodBody.ExceptionHandlers,instruction, replaceBy);
         }
 
         internal Instruction Create(OpCode opCode, ParameterDefinition parameterDefinition)

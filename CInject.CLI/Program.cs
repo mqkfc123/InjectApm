@@ -6,9 +6,7 @@ using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CInject.CLI
 {
@@ -104,7 +102,7 @@ namespace CInject.CLI
                             if (types[i].HasMethods)
                             {
                                 //method 
-                                var methodDefinitions = types[i].GetMethods(false);
+                                var methodDefinitions = MonoExtensions.GetMethods(types[i], false);
 
                                 for (int j = 0; j < methodDefinitions.Count; j++)
                                 {
@@ -141,7 +139,15 @@ namespace CInject.CLI
         {
             try
             {
-                IEnumerable<MonoAssemblyResolver> assemblies = _mapping.Select(x => x.Assembly).Distinct();
+                List<MonoAssemblyResolver> assemblies = new List<MonoAssemblyResolver>();
+
+                foreach (var x in _mapping)
+                {
+                    if (!assemblies.Contains(x.Assembly))
+                        assemblies.Add(x.Assembly);
+                }
+
+               // IEnumerable<MonoAssemblyResolver> assemblies = _mapping.Select(x => x.Assembly).Distinct();
 
                 foreach (MonoAssemblyResolver assembly in assemblies)
                     assembly.Save();

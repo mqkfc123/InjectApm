@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using CInject.Engine.Data;
-using System.IO;
 
 namespace CInject.Engine.Extensions
 {
     public static class ReflectionExtensions
     {
-        public static List<Type> GetType<T>(this Assembly assembly)
+        public static List<Type> GetType<T>(Assembly assembly)
         {
             //TODO: Optimize this...
             Type[] types = assembly.GetTypes();
@@ -23,16 +21,22 @@ namespace CInject.Engine.Extensions
             for (int x = 0; x < types.Length; x++)
             {
                 var s1 = types[x].GetInterfaces();
-                var counter = s1.Count(y => y.FullName == interfaceType.FullName);
+                var counter = new List<Type>();
+               
+                foreach (var item in s1)
+                {
+                    if (item.FullName == interfaceType.FullName)
+                        counter.Add(item);
+                } 
 
-                if (counter > 0)
+                if (counter.Count > 0)
                     selected.Add(types[x]);
             }
 
             return selected;
         }
 
-        public static Runtime GetRuntime(this Assembly assembly)
+        public static Runtime GetRuntime(Assembly assembly)
         {
             if (assembly.ImageRuntimeVersion.Contains("v1.0"))
                 return Runtime.Net_1_0;
@@ -46,9 +50,9 @@ namespace CInject.Engine.Extensions
                 return Runtime.Net_4_0;
         }
 
-        public static string GetPath(this Assembly assembly)
+        public static string GetPath(Assembly assembly)
         {
-            return new Uri(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).AbsolutePath;
+            return new Uri(Assembly.GetExecutingAssembly().CodeBase).AbsolutePath;
         }
     }
 }

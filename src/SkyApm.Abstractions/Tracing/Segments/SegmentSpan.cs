@@ -2,9 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SkyApm.Abstractions.Tracing.Segments
 {
@@ -14,7 +12,8 @@ namespace SkyApm.Abstractions.Tracing.Segments
 
         public int ParentSpanId { get; } = -1;
 
-        public long StartTime { get; } = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        //DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        public long StartTime { get; } = DateTimeOffset.UtcNow.UtcTicks;
 
         public long EndTime { get; private set; }
 
@@ -59,13 +58,13 @@ namespace SkyApm.Abstractions.Tracing.Segments
 
         public void AddLog(params LogEvent[] events)
         {
-            var log = new SpanLog(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), events);
+            var log = new SpanLog(DateTimeOffset.UtcNow.UtcTicks, events);
             Logs.AddLog(log);
         }
 
         public void Finish()
         {
-            EndTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            EndTime = DateTimeOffset.UtcNow.UtcTicks;
         }
     }
 
@@ -130,12 +129,19 @@ namespace SkyApm.Abstractions.Tracing.Segments
         private static readonly Dictionary<string, string> Empty = new Dictionary<string, string>();
         public long Timestamp { get; }
 
-        public IReadOnlyDictionary<string, string> Data { get; }
+        public Dictionary<string, string> Data { get; }
 
         public SpanLog(long timestamp, params LogEvent[] events)
         {
             Timestamp = timestamp;
-            Data = events?.ToDictionary(x => x.Key, x => x.Value) ?? Empty;
+            //Data = events?.ToDictionary(x => x.Key, x => x.Value) ?? Empty;
+            if (events != null && events.Length > 0)
+            {
+                foreach (var item in events)
+                {
+                    Data.Add(item.Key, item.Value);
+                }
+            }
         }
     }
 

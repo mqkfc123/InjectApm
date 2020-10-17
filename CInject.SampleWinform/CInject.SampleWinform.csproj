@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CInject.SampleWinform</RootNamespace>
     <AssemblyName>CInject.SampleWinform</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -39,22 +39,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Autofac, Version=4.2.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autofac.4.2.1\lib\net45\Autofac.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Google.Protobuf, Version=3.13.0.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Protobuf.3.13.0\lib\net45\Google.Protobuf.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Grpc.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d754f35622e28bad, processorArchitecture=MSIL">
-      <HintPath>..\packages\Grpc.Core.2.32.0\lib\net45\Grpc.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Grpc.Core.Api, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d754f35622e28bad, processorArchitecture=MSIL">
-      <HintPath>..\packages\Grpc.Core.Api.2.32.0\lib\net45\Grpc.Core.Api.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
       <Private>True</Private>
@@ -92,30 +76,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutofacModule.cs" />
-    <Compile Include="Common\CpuHelpers.cs" />
-    <Compile Include="Common\DnsHelpers.cs" />
-    <Compile Include="Common\GCHelpers.cs" />
-    <Compile Include="Common\NullableValue.cs" />
-    <Compile Include="Common\PlatformInformation.cs" />
-    <Compile Include="Common\SegmentV6Helpers.cs" />
-    <Compile Include="Common\StringOrIntValue.cs" />
-    <Compile Include="ContainerService.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Polly.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Transport\AgentOsInfoRequest.cs" />
-    <Compile Include="Transport\CLRStatsRequest.cs" />
-    <Compile Include="Transport\SegmentContextMapper.cs" />
-    <Compile Include="Transport\SegmentRequest.cs" />
-    <Compile Include="Transport\ServiceInstanceRequest.cs" />
-    <Compile Include="Worker.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -154,23 +122,8 @@
       <Project>{3a0ff730-3c89-447b-b635-d993de1367ec}</Project>
       <Name>SkyApm.Infrastructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\src\SkyApm.Transport.Grpc\SkyApm.Transport.Grpc.csproj">
-      <Project>{b58c0ca2-a713-44fe-95c3-7a5ce9e71c22}</Project>
-      <Name>SkyApm.Transport.Grpc</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\src\SkyWalking.NetworkProtocol\SkyWalking.NetworkProtocol.csproj">
-      <Project>{ba6bd56c-4a6c-413d-bbca-e9f3d2b2ded2}</Project>
-      <Name>SkyWalking.NetworkProtocol</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\Grpc.Core.2.32.0\build\net45\Grpc.Core.targets" Condition="Exists('..\packages\Grpc.Core.2.32.0\build\net45\Grpc.Core.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。使用“NuGet 程序包还原”可下载这些程序包。有关更多信息，请参见 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Grpc.Core.2.32.0\build\net45\Grpc.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Grpc.Core.2.32.0\build\net45\Grpc.Core.targets'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

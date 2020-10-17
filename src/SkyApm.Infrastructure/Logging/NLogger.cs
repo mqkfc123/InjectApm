@@ -1,6 +1,6 @@
 ﻿using SkyApm.Logging;
 using System;
-using NLoggers = NLog.ILogger;
+using NLoggers = NLog.Logger;
 
 namespace SkyApm.Infrastructure.Logging
 {

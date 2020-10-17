@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using CInject.Engine.Extensions;
 
@@ -30,7 +29,7 @@ namespace CInject.CLI.Data
             projMapping.MethodName = mapping.Method.Name;
             projMapping.MethodParameters = mapping.Method.Parameters.Count;
 
-            projMapping.InjectorAssemblyPath = mapping.Injector.Assembly.GetPath();
+            projMapping.InjectorAssemblyPath = ReflectionExtensions.GetPath(mapping.Injector.Assembly);
             projMapping.InjectorType = mapping.Injector.AssemblyQualifiedName;
             
             return projMapping;

@@ -3,11 +3,6 @@ using SkyApm.Abstractions.Config;
 using SkyApm.Abstractions.Transport;
 using SkyApm.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SkyApm.Core.Service
 {
@@ -32,16 +27,16 @@ namespace SkyApm.Core.Service
         protected override TimeSpan DueTime { get; } = TimeSpan.FromSeconds(30);
         protected override TimeSpan Period { get; } = TimeSpan.FromSeconds(60);
 
-        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+        protected override  void ExecuteAsync()
         {
             try
             {
-                await _pingCaller.PingAsync(
+                 _pingCaller.PingAsync(
                     new PingRequest
                     {
                         ServiceInstanceId = RuntimeEnvironment.ServiceInstanceId.Value,
                         InstanceId = RuntimeEnvironment.InstanceId.ToString("N")
-                    }, cancellationToken);
+                    });
                 Logger.Information($"Ping server @{DateTimeOffset.UtcNow}");
             }
             catch (Exception exception)

@@ -48,7 +48,7 @@ namespace SkyApm.Infrastructure.Configuration.Extensions
         /// <exception cref="ArgumentNullException"><paramref name="str"/> 为空或者全为空格。</exception>
         public static string NotEmptyOrWhiteSpace(this string str, string name)
         {
-            if (string.IsNullOrWhiteSpace(str))
+            if (string.IsNullOrEmpty(str))
                 throw new ArgumentNullException(name.NotEmpty("name"));
             return str;
         }

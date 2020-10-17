@@ -1,5 +1,5 @@
 
-using System.Linq;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 
@@ -17,7 +17,17 @@ namespace SkyApm.Core.Common
             try
             {
                 var ipAddresses = Dns.GetHostAddresses(Dns.GetHostName());
-                return ipAddresses.Where(x => x.AddressFamily == AddressFamily.InterNetwork).Select(ipAddress => ipAddress.ToString()).ToArray();
+
+                List<string> ips = new List<string>();
+
+                foreach (var item in ipAddresses)
+                {
+                    if (item.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        ips.Add(item.ToString());
+                    }
+                }
+                return ips.ToArray();
             }
             catch
             {

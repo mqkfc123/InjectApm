@@ -4,10 +4,8 @@ using SkyApm.Core.Common;
 using SkyApm.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SkyApm.Core.Service
 {
@@ -26,7 +24,7 @@ namespace SkyApm.Core.Service
         protected override TimeSpan DueTime { get; } = TimeSpan.FromSeconds(30);
         protected override TimeSpan Period { get; } = TimeSpan.FromSeconds(30);
 
-        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+        protected override void ExecuteAsync()
         {
             var cpuStats = new CPUStatsRequest
             {
@@ -61,7 +59,7 @@ namespace SkyApm.Core.Service
             };
             try
             {
-                await _reporter.ReportAsync(statsRequest, cancellationToken);
+                 _reporter.ReportAsync(statsRequest);
                 Logger.Information(
                     $"Report CLR Stats. CPU UsagePercent {cpuStats.UsagePercent} GenCollectCount {gcStats.Gen0CollectCount} {gcStats.Gen1CollectCount} {gcStats.Gen2CollectCount} {gcStats.HeapMemory / (1024 * 1024)}M ThreadPool {threadStats.AvailableWorkerThreads} {threadStats.MaxWorkerThreads} {threadStats.AvailableCompletionPortThreads} {threadStats.MaxCompletionPortThreads}");
             }

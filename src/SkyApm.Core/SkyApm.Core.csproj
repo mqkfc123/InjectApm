@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SkyApm.Core</RootNamespace>
     <AssemblyName>SkyApm.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -33,17 +33,17 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Autofac, Version=4.2.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Autofac.4.2.1\lib\net45\Autofac.dll</HintPath>
+    <Reference Include="System" />
+    <Reference Include="System.Core, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Core.3.5.21022.801\lib\net20\System.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq, Version=3.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Xml.Linq.3.5.21022.801\lib\net20\System.Xml.Linq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\CpuHelpers.cs" />
@@ -51,7 +51,6 @@
     <Compile Include="Common\GCHelpers.cs" />
     <Compile Include="Common\PlatformInformation.cs" />
     <Compile Include="CoreModule.cs" />
-    <Compile Include="ICoreBuilder.cs" />
     <Compile Include="InstrumentStartup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RuntimeEnvironment.cs" />
@@ -78,6 +77,10 @@
     <ProjectReference Include="..\SkyApm.Infrastructure\SkyApm.Infrastructure.csproj">
       <Project>{3a0ff730-3c89-447b-b635-d993de1367ec}</Project>
       <Name>SkyApm.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SkyApm.Transport.Http\SkyApm.Transport.Http.csproj">
+      <Project>{8bdba80d-6df8-4d44-919d-1f6cf7e2edd1}</Project>
+      <Name>SkyApm.Transport.Http</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
