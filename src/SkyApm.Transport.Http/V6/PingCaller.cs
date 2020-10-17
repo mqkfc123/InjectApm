@@ -40,7 +40,7 @@ namespace SkyApm.Transport.Grpc.V6
             param.Add("InstancePingPkg", serviceInstancePingPkg);
 
             //http 请求
-            var result = HttpHelper.PostMode(_config.Servers + heartbeat, Newtonsoft.Json.JsonConvert.SerializeObject(serviceInstancePingPkg));
+            var result = HttpHelper.PostMode(_config.Servers + heartbeat, Newtonsoft.Json.JsonConvert.SerializeObject(param));
             if (string.IsNullOrEmpty(result))
             {
               

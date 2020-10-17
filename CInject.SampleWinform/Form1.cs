@@ -1,4 +1,9 @@
-﻿using System;
+﻿using SkyApm.Abstractions.Tracing;
+using SkyApm.Abstractions.Tracing.Segments;
+using SkyApm.Core;
+using SkyApm.Core.Tracing;
+using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace CInject.SampleWinform
@@ -13,6 +18,14 @@ namespace CInject.SampleWinform
 
         private void btnChangeValue_Click(object sender, EventArgs e)
         {
+            var _tracingContext = WorkContext.TracingContext;
+
+            var context =  _tracingContext.CreateEntrySegmentContext("btnChangeValue_Click", new TextCarrierHeaderCollection(new Dictionary<string, string>()));
+
+            context.Span.AddTag("新节点1", "测试");
+            context.Span.AddLog(LogEvent.Message($"Worker running at: {DateTime.Now}"));
+
+            _tracingContext.Release(context);
 
             ChangeValue(txtInputValue);
         }

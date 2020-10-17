@@ -4,13 +4,14 @@ using System.Linq;
 
 namespace SkyApm.Transport.Http.Entity
 {
+    [Serializable]
     public class UpstreamSegment
     {
         public List<UniqueId> globalTraceIds { get; set; }
 
-        public string segment { get; set; }
+        public SegmentObject segment { get; set; }
     }
-
+    [Serializable]
     public class SegmentObject
     {
         public UniqueId traceSegmentId { get; set; }
@@ -21,6 +22,7 @@ namespace SkyApm.Transport.Http.Entity
 
     }
 
+    [Serializable]
     public class SpanObjectV2
     {
         public int spanId { get; set; }
@@ -41,6 +43,7 @@ namespace SkyApm.Transport.Http.Entity
         public List<Log> logs { get; set; }
     }
 
+    [Serializable]
     public class Log
     {
         public long time { get; set; }
@@ -48,6 +51,7 @@ namespace SkyApm.Transport.Http.Entity
     }
 
 
+    [Serializable]
     public class SegmentReference
     {
         public RefType refType { get; set; }

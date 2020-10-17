@@ -36,11 +36,8 @@ namespace SkyApm.Transport.Grpc.V6
                 //await asyncClientStreamingCall.ResponseAsync;
                 foreach (var segment in segmentRequests)
                 {
-                    var s = SegmentV6Helpers.Map(segment);
-
-                    Dictionary<string, object> param = new Dictionary<string, object>();
-                    param.Add("InstancePingPkg", s);
-
+                    var param = SegmentV6Helpers.Map(segment);
+                   
                     //http 请求
                     var result = HttpHelper.PostMode(_config.Servers + segments, Newtonsoft.Json.JsonConvert.SerializeObject(param));
                     if (string.IsNullOrEmpty(result))

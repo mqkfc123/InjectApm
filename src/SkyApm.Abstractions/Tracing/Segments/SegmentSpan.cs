@@ -13,7 +13,7 @@ namespace SkyApm.Abstractions.Tracing.Segments
         public int ParentSpanId { get; } = -1;
 
         //DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        public long StartTime { get; } = DateTimeOffset.UtcNow.UtcTicks;
+        public long StartTime { get; } = ToUnixTimeMilliseconds();
 
         public long EndTime { get; private set; }
 
@@ -32,6 +32,12 @@ namespace SkyApm.Abstractions.Tracing.Segments
 
         public LogCollection Logs { get; } = new LogCollection();
 
+        private static long ToUnixTimeMilliseconds()
+        {
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var t3 = Convert.ToInt64((DateTime.Now - epoch).TotalMilliseconds);
+            return t3;
+        }
         public SegmentSpan(string operationName, SpanType spanType)
         {
             OperationName = new StringOrIntValue(operationName);
@@ -58,13 +64,17 @@ namespace SkyApm.Abstractions.Tracing.Segments
 
         public void AddLog(params LogEvent[] events)
         {
-            var log = new SpanLog(DateTimeOffset.UtcNow.UtcTicks, events);
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var t3 = Convert.ToInt64((DateTime.Now - epoch).TotalMilliseconds);
+            var log = new SpanLog(t3, events);
             Logs.AddLog(log);
         }
 
         public void Finish()
         {
-            EndTime = DateTimeOffset.UtcNow.UtcTicks;
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var t3 = Convert.ToInt64((DateTime.Now - epoch).TotalMilliseconds);
+            EndTime = t3;
         }
     }
 
@@ -135,13 +145,16 @@ namespace SkyApm.Abstractions.Tracing.Segments
         {
             Timestamp = timestamp;
             //Data = events?.ToDictionary(x => x.Key, x => x.Value) ?? Empty;
+            Dictionary<string, string> _data = new Dictionary<string, string>();
+
             if (events != null && events.Length > 0)
             {
                 foreach (var item in events)
                 {
-                    Data.Add(item.Key, item.Value);
+                    _data.Add(item.Key, item.Value);
                 }
             }
+            Data = _data;
         }
     }
 

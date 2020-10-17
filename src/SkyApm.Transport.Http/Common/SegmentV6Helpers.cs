@@ -2,7 +2,10 @@
 using SkyApm.Abstractions.Transport;
 using SkyApm.Transport.Http.Entity;
 using System;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace SkyApm.Transport.Http.Common
 {
@@ -11,7 +14,10 @@ namespace SkyApm.Transport.Http.Common
     {
         public static UpstreamSegment Map(SegmentRequest request)
         {
-            var upstreamSegment = new UpstreamSegment();
+            var upstreamSegment = new UpstreamSegment()
+            {
+                globalTraceIds = new System.Collections.Generic.List<UniqueId>()
+            };
 
             upstreamSegment.globalTraceIds.AddRange(request.UniqueIds.Select(MapToUniqueId).ToArray());
 
@@ -20,18 +26,30 @@ namespace SkyApm.Transport.Http.Common
                 traceSegmentId = MapToUniqueId(request.Segment.SegmentId),
                 serviceId = request.Segment.ServiceId,
                 serviceInstanceId = request.Segment.ServiceInstanceId,
-                isSizeLimited = false
+                isSizeLimited = false,
+                spans = new System.Collections.Generic.List<SpanObjectV2>()
             };
             //Add
             traceSegment.spans.AddRange(request.Segment.Spans.Select(MapToSpan).ToArray());
 
-            upstreamSegment.segment = "";// traceSegment.ToByteString();
+            //using (MemoryStream ms = new MemoryStream())
+            //{
+            //    IFormatter formatter = new BinaryFormatter();
+            //    formatter.Serialize(ms, traceSegment);
+
+            //    upstreamSegment.segment = System.Text.Encoding.Default.GetString(ms.GetBuffer()) ;// traceSegment.ToByteString();
+            //}
+            //upstreamSegment.segment = Newtonsoft.Json.JsonConvert.SerializeObject(traceSegment);
+            upstreamSegment.segment = traceSegment;
             return upstreamSegment;
         }
 
         private static UniqueId MapToUniqueId(UniqueIdRequest uniqueIdRequest)
         {
-            var uniqueId = new UniqueId();
+            var uniqueId = new UniqueId()
+            {
+                idParts = new System.Collections.Generic.List<long>()
+            };
             uniqueId.idParts.Add(uniqueIdRequest.Part1);
             uniqueId.idParts.Add(uniqueIdRequest.Part2);
             uniqueId.idParts.Add(uniqueIdRequest.Part3);
@@ -48,7 +66,10 @@ namespace SkyApm.Transport.Http.Common
                 endTime = request.EndTime,
                 spanType = (SpanType)request.SpanType,
                 spanLayer = (SpanLayer)request.SpanLayer,
-                isError = request.IsError
+                isError = request.IsError,
+                logs = new System.Collections.Generic.List<Log>(),
+                tags = new System.Collections.Generic.List<KeyStringValuePair>(),
+                refs = new System.Collections.Generic.List<SegmentReference>()
             };
 
             ReadStringOrIntValue(spanObject, request.Component, ComponentReader, ComponentIdReader);
@@ -86,7 +107,12 @@ namespace SkyApm.Transport.Http.Common
 
         private static Log MapToLogMessage(LogDataRequest request)
         {
-            var logMessage = new Log { time = request.Timestamp };
+            var logMessage = new Log
+            {
+                data = new System.Collections.Generic.List<KeyStringValuePair>(),
+                time = request.Timestamp
+            };
+
             logMessage.data.AddRange(request.Data.Select(x => new KeyStringValuePair { key = x.Key, value = x.Value })
                 .ToArray());
             return logMessage;
