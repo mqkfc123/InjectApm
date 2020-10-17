@@ -32,15 +32,15 @@ namespace SkyApm.Transport.Http.Common
             //Add
             traceSegment.spans.AddRange(request.Segment.Spans.Select(MapToSpan).ToArray());
 
-            //using (MemoryStream ms = new MemoryStream())
-            //{
-            //    IFormatter formatter = new BinaryFormatter();
-            //    formatter.Serialize(ms, traceSegment);
+            using (MemoryStream ms = new MemoryStream())
+            {
+                IFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(ms, traceSegment);
 
-            //    upstreamSegment.segment = System.Text.Encoding.Default.GetString(ms.GetBuffer()) ;// traceSegment.ToByteString();
-            //}
+                upstreamSegment.segment = ms.GetBuffer();// traceSegment.ToByteString();
+            }
             //upstreamSegment.segment = Newtonsoft.Json.JsonConvert.SerializeObject(traceSegment);
-            upstreamSegment.segment = traceSegment;
+            //upstreamSegment.segment = traceSegment;
             return upstreamSegment;
         }
 
