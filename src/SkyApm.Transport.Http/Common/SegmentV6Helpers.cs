@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 
 namespace SkyApm.Transport.Http.Common
 {
@@ -32,15 +33,19 @@ namespace SkyApm.Transport.Http.Common
             //Add
             traceSegment.spans.AddRange(request.Segment.Spans.Select(MapToSpan).ToArray());
 
-            using (MemoryStream ms = new MemoryStream())
-            {
-                IFormatter formatter = new BinaryFormatter();
-                formatter.Serialize(ms, traceSegment);
+            //using (MemoryStream ms = new MemoryStream())
+            //{
+            //    IFormatter formatter = new BinaryFormatter();
+            //    formatter.Serialize(ms, traceSegment);
+            //    var var1 = ms.GetBuffer();
+            //    upstreamSegment.segment = Convert.ToBase64String(var1);// traceSegment.ToByteString();
 
-                upstreamSegment.segment = ms.GetBuffer();// traceSegment.ToByteString();
-            }
-            //upstreamSegment.segment = Newtonsoft.Json.JsonConvert.SerializeObject(traceSegment);
-            //upstreamSegment.segment = traceSegment;
+            //}
+
+            var base64Decoded = Newtonsoft.Json.JsonConvert.SerializeObject(traceSegment);
+            byte[] data = Encoding.UTF8.GetBytes(base64Decoded);
+            upstreamSegment.segment = System.Convert.ToBase64String(data);
+
             return upstreamSegment;
         }
 
