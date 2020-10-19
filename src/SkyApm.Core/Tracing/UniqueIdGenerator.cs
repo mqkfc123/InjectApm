@@ -19,9 +19,13 @@ namespace SkyApm.Core.Tracing
         public UniqueId Generate()
         {
             //ToUnixTimeMilliseconds
+
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var t3 = Convert.ToInt64((DateTime.Now - epoch).TotalMilliseconds);
+
             return new UniqueId(_runtimeEnvironment.ServiceInstanceId.Value,
                 Thread.CurrentThread.ManagedThreadId,
-                DateTimeOffset.UtcNow.UtcTicks * 10000 + GetSequence());
+                t3 * 10000 + GetSequence());
         }
 
         private long GetSequence()
