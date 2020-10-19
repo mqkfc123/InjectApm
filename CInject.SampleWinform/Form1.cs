@@ -20,7 +20,7 @@ namespace CInject.SampleWinform
         {
             var _tracingContext = WorkContext.TracingContext;
 
-            var context =  _tracingContext.CreateEntrySegmentContext("btnChangeValue_Click", new TextCarrierHeaderCollection(new Dictionary<string, string>()));
+            var context =  _tracingContext.CreateEntrySegmentContext("btnChangeValue_Click2", new TextCarrierHeaderCollection(new Dictionary<string, string>()));
 
             context.Span.AddTag("新节点1", "测试");
             context.Span.AddLog(LogEvent.Message($"Worker running at: {DateTime.Now}"));

@@ -29,23 +29,14 @@ namespace SkyApm.Transport.Grpc.V6
             try
             {
                 var stopwatch = Stopwatch.StartNew();
-
-                //foreach (var segment in segmentRequests)
-                //    await asyncClientStreamingCall.RequestStream.WriteAsync(SegmentV6Helpers.Map(segment));
-                //await asyncClientStreamingCall.RequestStream.CompleteAsync();
-                //await asyncClientStreamingCall.ResponseAsync;
                 foreach (var segment in segmentRequests)
                 {
                     var param = SegmentV6Helpers.Map(segment);
-                   
                     //http 请求
                     var result = HttpHelper.PostMode(_config.Servers + segments, Newtonsoft.Json.JsonConvert.SerializeObject(param));
-                    if (string.IsNullOrEmpty(result))
+                    if (!string.IsNullOrEmpty(result))
                     {
-                    }
-                    else
-                    {
-                        List<KeyStringValuePair> values = Newtonsoft.Json.JsonConvert.DeserializeObject<List<KeyStringValuePair>>(result);
+                        _logger.Information($"Report {result}");
                     }
                 }
                 stopwatch.Stop();

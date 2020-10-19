@@ -2,6 +2,7 @@
 using SkyApm.Abstractions.Transport;
 using SkyApm.Transport.Http.Entity;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -17,34 +18,17 @@ namespace SkyApm.Transport.Http.Common
         {
             var upstreamSegment = new UpstreamSegment()
             {
-                globalTraceIds = new System.Collections.Generic.List<UniqueId>()
+                globalTraceIds = new List<UniqueId>()
             };
 
             upstreamSegment.globalTraceIds.AddRange(request.UniqueIds.Select(MapToUniqueId).ToArray());
-
-            var traceSegment = new SegmentObject
-            {
-                traceSegmentId = MapToUniqueId(request.Segment.SegmentId),
-                serviceId = request.Segment.ServiceId,
-                serviceInstanceId = request.Segment.ServiceInstanceId,
-                isSizeLimited = false,
-                spans = new System.Collections.Generic.List<SpanObjectV2>()
-            };
+            upstreamSegment.traceSegmentId = MapToUniqueId(request.Segment.SegmentId);
+            upstreamSegment.spans = new List<SpanObjectV2>();
+            upstreamSegment.serviceId = request.Segment.ServiceId;
+            upstreamSegment.serviceInstanceId = request.Segment.ServiceInstanceId;
+            upstreamSegment.isSizeLimited = false;
             //Add
-            traceSegment.spans.AddRange(request.Segment.Spans.Select(MapToSpan).ToArray());
-
-            //using (MemoryStream ms = new MemoryStream())
-            //{
-            //    IFormatter formatter = new BinaryFormatter();
-            //    formatter.Serialize(ms, traceSegment);
-            //    var var1 = ms.GetBuffer();
-            //    upstreamSegment.segment = Convert.ToBase64String(var1);// traceSegment.ToByteString();
-
-            //}
-
-            var base64Decoded = Newtonsoft.Json.JsonConvert.SerializeObject(traceSegment);
-            byte[] data = Encoding.UTF8.GetBytes(base64Decoded);
-            upstreamSegment.segment = System.Convert.ToBase64String(data);
+            upstreamSegment.spans.AddRange(request.Segment.Spans.Select(MapToSpan).ToArray());
 
             return upstreamSegment;
         }
@@ -53,7 +37,7 @@ namespace SkyApm.Transport.Http.Common
         {
             var uniqueId = new UniqueId()
             {
-                idParts = new System.Collections.Generic.List<long>()
+                idParts = new List<long>()
             };
             uniqueId.idParts.Add(uniqueIdRequest.Part1);
             uniqueId.idParts.Add(uniqueIdRequest.Part2);
@@ -70,11 +54,11 @@ namespace SkyApm.Transport.Http.Common
                 startTime = request.StartTime,
                 endTime = request.EndTime,
                 spanType = (SpanType)request.SpanType,
-                spanLayer = (SpanLayer)request.SpanLayer,
+                spanLayer = SpanLayer.Http,
                 isError = request.IsError,
-                logs = new System.Collections.Generic.List<Log>(),
-                tags = new System.Collections.Generic.List<KeyStringValuePair>(),
-                refs = new System.Collections.Generic.List<SegmentReference>()
+                logs = new List<Log>(),
+                tags = new List<KeyStringValuePair>(),
+                refs = new List<SegmentReference>()
             };
 
             ReadStringOrIntValue(spanObject, request.Component, ComponentReader, ComponentIdReader);

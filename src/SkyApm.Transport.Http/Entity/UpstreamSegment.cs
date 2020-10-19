@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace SkyApm.Transport.Http.Entity
 {
@@ -9,7 +10,14 @@ namespace SkyApm.Transport.Http.Entity
     {
         public List<UniqueId> globalTraceIds { get; set; }
 
-        public string segment { get; set; }
+        //public string segment { get; set; } 
+        public UniqueId traceSegmentId { get; set; }
+        public List<SpanObjectV2> spans { get; set; }
+        public int serviceId { get; set; }
+        public int serviceInstanceId { get; set; }
+        public bool isSizeLimited { get; set; }
+
+
     }
     [Serializable]
     public class SegmentObject
