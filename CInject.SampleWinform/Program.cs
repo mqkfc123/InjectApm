@@ -23,13 +23,13 @@ namespace CInject.SampleWinform
     {
         static void Main()
         {
-            //var coreBuilder = new CoreBuilder();
-            //coreBuilder.OnStarting(builder =>
-            //{
-            //    builder.RegisterModule<GrpcModule>();
-            //    builder.RegisterModule<AutofacModule>();
-            //});
-            //coreBuilder.Build();
+            var coreBuilder = new CoreBuilder();
+            coreBuilder.OnStarting(builder =>
+            {
+                builder.RegisterModule<GrpcModule>();
+                builder.RegisterModule<AutofacModule>();
+            });
+            coreBuilder.Build();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

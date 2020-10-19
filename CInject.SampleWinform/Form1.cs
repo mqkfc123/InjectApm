@@ -27,7 +27,7 @@ namespace CInject.SampleWinform
     public partial class Form1 : Form
     {
         IInstrumentStartup _service = WorkContext.LifetimeScope.Resolve<IInstrumentStartup>();
-        //Worker _worker = WorkContext.LifetimeScope.Resolve<Worker>();
+        Worker _worker = WorkContext.LifetimeScope.Resolve<Worker>();
 
 
         public Form1()
@@ -38,7 +38,7 @@ namespace CInject.SampleWinform
 
         private void btnChangeValue_Click(object sender, EventArgs e)
         {
-
+            _worker.ExecuteAsync(new CancellationToken());
             ChangeValue(txtInputValue);
         }
 
@@ -48,7 +48,7 @@ namespace CInject.SampleWinform
 
             // Channel channel = new Channel("10.16.0.25:11800", ChannelCredentials.Insecure);
             //Channel channel = new Channel("10.16.2.113:11800", ChannelCredentials.Insecure);
-
+            //10.16.0.77:12800
             try
             {
                 //    var client = new Register.RegisterClient(channel);
