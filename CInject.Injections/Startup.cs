@@ -11,12 +11,6 @@ namespace CInject.Injections
 
         public void OnInvoke()
         {
-            //var coreBuilder = new CoreBuilder();
-            //coreBuilder.OnStarting(builder =>
-            //{
-            //    builder.RegisterModule<GrpcModule>();
-            //});
-            //coreBuilder.Build();
             InstrumentStartup startup = new InstrumentStartup();
             startup.StartAsync();
         }
@@ -25,5 +19,6 @@ namespace CInject.Injections
         {
 
         }
+
     }
 }

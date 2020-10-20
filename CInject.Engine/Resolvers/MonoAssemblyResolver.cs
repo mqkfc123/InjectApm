@@ -9,6 +9,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using CInject.Injections.Library;
 using System.Diagnostics;
+using System.Linq;
 
 namespace CInject.Engine.Resolvers
 {
@@ -63,58 +64,24 @@ namespace CInject.Engine.Resolvers
 
             foreach (var type in _assembly.MainModule.Types)
             {
-                //type.Interfaces.Count
-
-                var v1 = false;
-                foreach (var item in type.Interfaces)
-                {
-                    if (item.FullName == "CInject.Injections.Interfaces.ICInject")
-                    {
-                        v1 = true;
-                    }
-                }
-
-                if (v1)
+                if (type.Interfaces.Count(x => x.FullName == "CInject.Injections.Interfaces.ICInject") > 0)
                 {
                     injectionTypes.Add(type);
                 }
-
             }
 
             return injectionTypes;
         }
 
         internal List<TypeDefinition> FindStaticClasses()
-        {
-            List<TypeDefinition> typeDefinitions = new List<TypeDefinition>();
+        { 
 
-            foreach (var type in _assembly.MainModule.Types)
-            {
-                var isStatic = false;
-                foreach (var item in type.Methods)
-                {
-                    if (item.IsStatic)
-                        isStatic = true;
-                }
-                if (isStatic)
-                    typeDefinitions.Add(type);
-            }
-
-            return typeDefinitions;
+            return _assembly.MainModule.Types.Where(type => type.Methods.Count(x => x.IsStatic) > 0).ToList();
         }
 
         public List<TypeDefinition> FindClasses()
         {
-            List<TypeDefinition> typeDefinitions = new List<TypeDefinition>();
-
-            foreach (var type in _assembly.MainModule.Types)
-            {
-                if (type.IsClass)
-                    typeDefinitions.Add(type);
-            }
-
-            return typeDefinitions;
-
+            return _assembly.MainModule.Types.Where(x => x.IsClass).ToList();
         }
 
         public bool Inject(Type type)

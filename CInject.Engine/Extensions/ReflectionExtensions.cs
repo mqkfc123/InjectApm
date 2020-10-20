@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using CInject.Engine.Data;
+using System.Linq;
 
 namespace CInject.Engine.Extensions
 {
@@ -21,15 +22,9 @@ namespace CInject.Engine.Extensions
             for (int x = 0; x < types.Length; x++)
             {
                 var s1 = types[x].GetInterfaces();
-                var counter = new List<Type>();
-               
-                foreach (var item in s1)
-                {
-                    if (item.FullName == interfaceType.FullName)
-                        counter.Add(item);
-                } 
+                var counter = s1.Count(y => y.FullName == interfaceType.FullName);
 
-                if (counter.Count > 0)
+                if (counter > 0)
                     selected.Add(types[x]);
             }
 

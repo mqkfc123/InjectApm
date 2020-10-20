@@ -4,6 +4,7 @@ using Mono.Cecil.Cil;
 using Mono.Cecil;
 using CInject.Engine.Data;
 using System.Reflection;
+using System.Linq;
 
 namespace CInject.Engine.Extensions
 {
@@ -69,27 +70,17 @@ namespace CInject.Engine.Extensions
         public static MethodReference ImportConstructor<T>(AssemblyDefinition assembly)
         {
             Type inputType = typeof(T);
-            var ConstructorInfos = new List<ConstructorInfo>();
+            return assembly.MainModule.Import(inputType.GetConstructors().First(c => !c.IsStatic));
 
-            foreach (var item in inputType.GetConstructors())
-            {
-                if (!item.IsStatic)
-                    ConstructorInfos.Add(item);
-            }
-            return assembly.MainModule.Import(ConstructorInfos[0]);
         }
 
         public static MethodReference ImportConstructor(AssemblyDefinition assembly, Type inputType)
         {
             //var method = inputType.GetConstructors().First(c => !c.IsStatic);
+            var method = inputType.GetConstructors().First(c => !c.IsStatic);
 
-            var ConstructorInfos = new List<ConstructorInfo>();
-            foreach (var item in inputType.GetConstructors())
-            {
-                if (!item.IsStatic)
-                    ConstructorInfos.Add(item);
-            }
-            return assembly.MainModule.Import(ConstructorInfos[0]);
+            return assembly.MainModule.Import(inputType.GetConstructors().First(c => !c.IsStatic));
+
         }
 
         public static MethodDefinition GetMethodDefinition(TypeDefinition typeDefinition, string name,

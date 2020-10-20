@@ -14,12 +14,7 @@ namespace CInject.Injections.Injectors
     [DependentFiles("ObjectSearch.xml", "CInject.Injections.dll", "LogInject.log4net.xml", "log4net.dll")]
     public class ObjectValueInject : ICInject
     {
-        private ITracingContext _tracingContext = null;
-
-        public ObjectValueInject()
-        {
-            _tracingContext = WorkContext.TracingContext;
-        }
+        private ITracingContext  _tracingContext = WorkContext.TracingContext;
 
         public class ObjectSearch
         {
