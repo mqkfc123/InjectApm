@@ -6,6 +6,7 @@ using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace CInject.CLI
@@ -18,13 +19,17 @@ namespace CInject.CLI
         private static Dictionary<string, Type> _injectTypeDict = new Dictionary<string, Type>();
         private static List<BindItem> _bindItem = new List<BindItem>();
 
+        public static List<string> _methodTargetItem = new List<string>();
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Loading Injection ========");
+            Console.WriteLine("Loading MethodTarget =========");
+            LoadingMethodTarget();
+
+            Console.WriteLine("Loading Injection =========");
             LoadInjection();
 
-            Console.WriteLine("Loading Target ===========");
+            Console.WriteLine("Loading Target =========");
             LoadTarget();
 
             foreach (var item in _mapping)
@@ -37,6 +42,34 @@ namespace CInject.CLI
 
             Console.ReadLine();
         }
+
+        private static void LoadingMethodTarget()
+        {
+            try
+            {
+                var path = AppDomain.CurrentDomain.BaseDirectory + "methodTarget.txt";
+
+                if (File.Exists(path))
+                {
+                    var methodTargets = File.ReadAllText(path, Encoding.UTF8);
+
+                    foreach (var methodName in methodTargets.Split(';'))
+                    {
+                        _methodTargetItem.Add(methodName.ToLower());
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"{path}文件不存在");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         private static void LoadInjection()
         {
             try
@@ -106,6 +139,13 @@ namespace CInject.CLI
 
                                 for (int j = 0; j < methodDefinitions.Count; j++)
                                 {
+                                    var var1 = types[i].FullName + "." + methodDefinitions[j].Name;
+
+                                    if (_methodTargetItem.Count > 0 && !_methodTargetItem.Contains(var1.ToLower()))
+                                    {
+                                        continue;
+                                    }
+
                                     Type type = null;
                                     if (types[i].Name == "Program" && methodDefinitions[j].Name == "Main")
                                     {
@@ -140,14 +180,13 @@ namespace CInject.CLI
             try
             {
                 List<MonoAssemblyResolver> assemblies = new List<MonoAssemblyResolver>();
-
                 foreach (var x in _mapping)
                 {
                     if (!assemblies.Contains(x.Assembly))
                         assemblies.Add(x.Assembly);
                 }
 
-               // IEnumerable<MonoAssemblyResolver> assemblies = _mapping.Select(x => x.Assembly).Distinct();
+                //IEnumerable<MonoAssemblyResolver> assemblies = _mapping.Select(x => x.Assembly).Distinct();
 
                 foreach (MonoAssemblyResolver assembly in assemblies)
                     assembly.Save();

@@ -1,18 +1,24 @@
-﻿using SkyApm.Core;
+﻿using CInject.Injections.Library;
+using SkyApm.Core;
+using System;
 
 namespace CInject.Injections
 {
     public class Startup
     {
-        public Startup()
-        {
-
-        } 
-
+        
         public void OnInvoke()
         {
-            InstrumentStartup startup = new InstrumentStartup();
-            startup.StartAsync();
+            try
+            {
+
+                InstrumentStartup startup = new InstrumentStartup();
+                startup.StartAsync();
+            }
+            catch (Exception ex)
+            {
+                Logger.Debug("startup:" + ex.Message);
+            }
         }
 
         public void OnComplete()

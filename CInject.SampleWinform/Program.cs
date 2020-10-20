@@ -15,8 +15,8 @@ namespace CInject.SampleWinform
             //});
             //coreBuilder.Build();
 
-            InstrumentStartup startup = new InstrumentStartup();
-            startup.StartAsync();
+            //InstrumentStartup startup = new InstrumentStartup();
+            //startup.StartAsync();
 
 
             Application.EnableVisualStyles();

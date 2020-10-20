@@ -36,20 +36,28 @@ namespace CInject.Injections.Injectors
                 _injection = injection;
                 _startTime = DateTime.Now;
 
-                if (!Logger.IsDebugEnabled) return;
-                if (_injection == null) return;
-                if (!File.Exists(FileName)) return;
-                if (!injection.IsValid()) return;
+                if (!Logger.IsDebugEnabled)
+                    return;
+                if (_injection == null)
+                    return;
+                if (!File.Exists(FileName))
+                    return;
+                if (!injection.IsValid())
+                    return;
 
                 var objectSearch = CachedSerializer.Deserialize<ObjectSearch>(File.ReadAllText(FileName), Encoding.UTF8);
-                if (objectSearch == null || objectSearch.PropertyNames == null) return;
+                if (objectSearch == null || objectSearch.PropertyNames == null)
+                    return;
 
-                _context.Span.AddTag("Method", injection.Method.Name);
+                _context.Span.AddTag("Method", _injection.Method.Name);
+
+                var method = "";
+                var value = "";
+
                 foreach (string propertyName in objectSearch.PropertyNames)
                 {
                     var dictionary = _injection.GetPropertyValue(propertyName);
-                    var method = "";
-                    var value = "";
+
                     foreach (var key in dictionary.Keys)
                     {
                         method = string.Format("Method {0} Argument #{1} :{2}= {3}", injection.Method.Name, key, propertyName, dictionary[key] ?? "<null>");
@@ -57,9 +65,18 @@ namespace CInject.Injections.Injectors
 
                         value += propertyName + "=" + dictionary[key] ?? "<null> ";
                     }
-
-                    _context.Span.AddLog(LogEvent.Event($"{injection.Method.Name} :{value}"));
                 }
+                if (!string.IsNullOrEmpty(value))
+                    _context.Span.AddLog(LogEvent.Event($"{injection.Method.Name} :{value}"));
+
+
+                var parameters = _injection.Method.GetParameters();
+                var paramStr = "";
+                for (int i = 0; i < injection.Arguments.Length; i++)
+                {
+                    paramStr += parameters[i].Name+":" + Newtonsoft.Json.JsonConvert.SerializeObject( _injection.Arguments[i])+" \r\n";
+                }
+                _context.Span.AddLog(new LogEvent($"Arguments ", paramStr));
 
             }
             catch (Exception ex)

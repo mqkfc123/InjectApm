@@ -11,6 +11,9 @@ namespace CInject.SampleWinform
 
     public partial class Form1 : Form
     {
+
+        private ITracingContext _tracingContext = WorkContext.TracingContext;
+
         public Form1()
         {
             InitializeComponent();
@@ -18,9 +21,8 @@ namespace CInject.SampleWinform
 
         private void btnChangeValue_Click(object sender, EventArgs e)
         {
-            var _tracingContext = WorkContext.TracingContext;
 
-            var context =  _tracingContext.CreateEntrySegmentContext("btnChangeValue_Click2", new TextCarrierHeaderCollection(new Dictionary<string, string>()));
+            var context = _tracingContext.CreateEntrySegmentContext("btnChangeValue_Click2", new TextCarrierHeaderCollection(new Dictionary<string, string>()));
 
             context.Span.AddTag("新节点1", "测试");
             context.Span.AddLog(LogEvent.Message($"Worker running at: {DateTime.Now}"));
@@ -36,7 +38,6 @@ namespace CInject.SampleWinform
             try
             {
                 this.lblValue.Text = textValue.Text;
-
             }
             catch (Exception ex)
             {
@@ -44,11 +45,11 @@ namespace CInject.SampleWinform
             }
 
         }
-  
+
 
         private void button1_Click(object sender, EventArgs e)
         {
-             
+
 
         }
     }
