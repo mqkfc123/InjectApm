@@ -46,6 +46,17 @@ namespace SkyApm.Abstractions.Tracing.Segments
             SpanType = spanType;
         }
 
+        public SegmentSpan(string operationName, SpanType spanType, int spanId, int parentSpanId)
+        {
+            OperationName = new StringOrIntValue(operationName);
+            Component = new StringOrIntValue("");
+            Peer = new StringOrIntValue("");
+            SpanType = spanType;
+            SpanId = spanId;
+            ParentSpanId = parentSpanId;
+        }
+
+
         public SegmentSpan AddTag(string key, string value)
         {
             Tags.AddTag(key, value);

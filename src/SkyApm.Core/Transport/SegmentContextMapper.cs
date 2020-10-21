@@ -40,6 +40,7 @@ namespace SkyApm.Core.Transport
                 Component = segmentContext.Span.Component
             };
             foreach (var reference in segmentContext.References)
+            {
                 span.References.Add(new SegmentReferenceRequest
                 {
                     ParentSegmentId = MapUniqueId(reference.ParentSegmentId),
@@ -51,6 +52,8 @@ namespace SkyApm.Core.Transport
                     NetworkAddress = reference.NetworkAddress,
                     RefType = (int)reference.Reference
                 });
+            }
+                
 
             foreach (var tag in segmentContext.Span.Tags)
                 span.Tags.Add(new KeyValuePair<string, string>(tag.Key, tag.Value));

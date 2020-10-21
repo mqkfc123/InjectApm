@@ -31,7 +31,7 @@ namespace CInject.Injections.Injectors
         {
             try
             {
-               _context = _tracingContext.CreateEntrySegmentContext(injection.Method.Name, new TextCarrierHeaderCollection(new Dictionary<string, string>()));
+                _context = _tracingContext.CreateEntrySegmentContext(injection.Method.Name, new TextCarrierHeaderCollection(new Dictionary<string, string>()));
 
                 _injection = injection;
                 _startTime = DateTime.Now;
@@ -45,9 +45,12 @@ namespace CInject.Injections.Injectors
                 if (!injection.IsValid())
                     return;
 
+
                 var objectSearch = CachedSerializer.Deserialize<ObjectSearch>(File.ReadAllText(FileName), Encoding.UTF8);
                 if (objectSearch == null || objectSearch.PropertyNames == null)
                     return;
+
+                Logger.Info("============Method==========" + _injection.Method.Name);
 
                 _context.Span.AddTag("Method", _injection.Method.Name);
 
@@ -72,12 +75,13 @@ namespace CInject.Injections.Injectors
 
                 var parameters = _injection.Method.GetParameters();
                 var paramStr = "";
-                for (int i = 0; i < injection.Arguments.Length; i++)
-                {
-                    paramStr += parameters[i].Name+":" + Newtonsoft.Json.JsonConvert.SerializeObject( _injection.Arguments[i])+" \r\n";
-                }
+                //for (int i = 0; i < injection.Arguments.Length; i++)
+                //{
+                //    paramStr += parameters[i].Name + ":" + Newtonsoft.Json.JsonConvert.SerializeObject(_injection.Arguments[i]) + " \r\n";
+                //}
                 _context.Span.AddLog(new LogEvent($"Arguments ", paramStr));
 
+                 
             }
             catch (Exception ex)
             {
@@ -94,6 +98,7 @@ namespace CInject.Injections.Injectors
 
             _context.Span.AddLog(LogEvent.Message($"OnComplete running at: {DateTime.Now} ,executed in {DateTime.Now.Subtract(_startTime).TotalMilliseconds}"));
             _tracingContext.Release(_context);
+
         }
 
 

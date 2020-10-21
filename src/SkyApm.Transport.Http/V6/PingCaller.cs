@@ -41,15 +41,11 @@ namespace SkyApm.Transport.Grpc.V6
 
             //http 请求
             var result = HttpHelper.PostMode(_config.Servers + heartbeat, Newtonsoft.Json.JsonConvert.SerializeObject(serviceInstancePingPkg));
-            if (string.IsNullOrEmpty(result))
+            if (!string.IsNullOrEmpty(result))
             {
-              
+                _logger.Information($"PingAsync : {result}");
             }
-            else
-            {
-                List<KeyStringValuePair> values = Newtonsoft.Json.JsonConvert.DeserializeObject<List<KeyStringValuePair>>(result);
-             
-            }
+            
         }
 
     }
