@@ -14,7 +14,7 @@ namespace CInject.SampleWinform
     public partial class Form1 : Form
     {
 
-        private ITracingContext _tracingContext = WorkContext.TracingContext;
+        //private ITracingContext _tracingContext = WorkContext.TracingContext;
 
         public Form1()
         {
@@ -23,44 +23,54 @@ namespace CInject.SampleWinform
 
         private void btnChangeValue_Click(object sender, EventArgs e)
         {
+            //var context = _tracingContext.CreateEntrySegmentContext("btnChangeValue_JayJ1", new TextCarrierHeaderCollection(new Dictionary<string, string>()));
+            //context.Span.AddTag("新节点1", "测试");
+            //context.Span.AddLog(LogEvent.Message($"Worker running at: {DateTime.Now}"));
 
-            var context = _tracingContext.CreateEntrySegmentContext("btnChangeValue_Click", new TextCarrierHeaderCollection(new Dictionary<string, string>()));
-
-            context.Span.AddTag("新节点1", "测试");
-            context.Span.AddLog(LogEvent.Message($"Worker running at2: {DateTime.Now}"));
-
-
-            _tracingContext.Release(context);
-
-            ChangeValue(txtInputValue);
+            ChangeValue(txtInputValue.Text);
         }
 
-        private void ChangeValue(TextBox textValue)
+        private void ChangeValue(string textValue)
         {
 
+            //var context = _tracingContext.CreateExitSegmentContext("ChangeValue", "test");
             try
             {
-
-                var context = _tracingContext.CreateEntrySegmentContext("ChangeValue", new TextCarrierHeaderCollection(new Dictionary<string, string>()));
-
-                context.Span.AddTag("新节点2", "测试");
-                context.Span.AddLog(LogEvent.Message($"Worker running at3: {DateTime.Now}"));
-
+                //context.Span.AddTag("新节点2", "测试");
+                //context.Span.AddLog(LogEvent.Message($"Worker running at3: {DateTime.Now}"));
                 Thread.Sleep(2000);
-                this.lblValue.Text = textValue.Text;
-
-                _tracingContext.Release(context);
+                this.lblValue.Text = textValue;
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-
-
-
+            finally
+            {
+                //var entryContext = WorkContext.EntrySegmentContextAccessor;
+                //_tracingContext.Release(entryContext.Context);
+                //_tracingContext.Release(context);
+                ChangeValue2(textValue);
+            }
 
         }
+        private void ChangeValue2(string textValue)
+        {
 
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+
+            }
+
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {

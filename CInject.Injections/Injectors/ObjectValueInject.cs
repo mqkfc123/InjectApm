@@ -31,7 +31,14 @@ namespace CInject.Injections.Injectors
         {
             try
             {
-                _context = _tracingContext.CreateEntrySegmentContext(injection.Method.Name, new TextCarrierHeaderCollection(new Dictionary<string, string>()));
+                if (WorkContext.SegmentContext.Count <= 0)
+                {
+                    _context = _tracingContext.CreateEntrySegmentContext(injection.Method.Name, new TextCarrierHeaderCollection(new Dictionary<string, string>()));
+                }
+                else
+                {
+                    _context = _tracingContext.CreateExitSegmentContext(injection.Method.Name, "");
+                }
 
                 _injection = injection;
                 _startTime = DateTime.Now;
@@ -72,16 +79,21 @@ namespace CInject.Injections.Injectors
                 if (!string.IsNullOrEmpty(value))
                     _context.Span.AddLog(LogEvent.Event($"{injection.Method.Name} :{value}"));
 
-
                 var parameters = _injection.Method.GetParameters();
                 var paramStr = "";
-                //for (int i = 0; i < injection.Arguments.Length; i++)
-                //{
-                //    paramStr += parameters[i].Name + ":" + Newtonsoft.Json.JsonConvert.SerializeObject(_injection.Arguments[i]) + " \r\n";
-                //}
+                for (int i = 0; i < injection.Arguments.Length; i++)
+                {
+                    // if (_injection.Arguments[i].GetType())
+                    //  continue;
+                    if (_injection.Arguments[i].GetType().ToString() == "System.Windows.Forms.Button")
+                        continue;
+
+                    paramStr += parameters[i].Name + ":" + Newtonsoft.Json.JsonConvert.SerializeObject(_injection.Arguments[i]) + " \r\n";
+                }
                 _context.Span.AddLog(new LogEvent($"Arguments ", paramStr));
 
-                 
+                WorkContext.SegmentContext.Add(_context);
+
             }
             catch (Exception ex)
             {
@@ -91,14 +103,20 @@ namespace CInject.Injections.Injectors
 
         }
 
+
         public void OnComplete()
         {
             if (_injection != null && _injection.IsValid())
                 Logger.Info(string.Format("{0} executed in {1} mSec", _injection.Method.Name, DateTime.Now.Subtract(_startTime).TotalMilliseconds));
 
             _context.Span.AddLog(LogEvent.Message($"OnComplete running at: {DateTime.Now} ,executed in {DateTime.Now.Subtract(_startTime).TotalMilliseconds}"));
-            _tracingContext.Release(_context);
 
+            foreach (var context in WorkContext.SegmentContext)
+            {
+                _tracingContext.Release(context);
+            }
+
+            WorkContext.SegmentContext.Clear();
         }
 
 

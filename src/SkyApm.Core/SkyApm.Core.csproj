@@ -60,6 +60,9 @@
     <Compile Include="Service\SegmentReportService.cs" />
     <Compile Include="Tracing\Carrier.cs" />
     <Compile Include="Tracing\CarrierPropagator.cs" />
+    <Compile Include="Tracing\EntrySegmentContextAccessor.cs" />
+    <Compile Include="Tracing\ExitSegmentContextAccessor.cs" />
+    <Compile Include="Tracing\LocalSegmentContextAccessor.cs" />
     <Compile Include="Tracing\NullableCarrier.cs" />
     <Compile Include="Tracing\SegmentContextFactory.cs" />
     <Compile Include="Tracing\TextCarrierHeaderCollection.cs" />

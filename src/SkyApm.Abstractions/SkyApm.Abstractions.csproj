@@ -66,6 +66,9 @@
     <Compile Include="Tracing\ICarrierFormatter.cs" />
     <Compile Include="Tracing\ICarrierHeaderCollection.cs" />
     <Compile Include="Tracing\ICarrierPropagator.cs" />
+    <Compile Include="Tracing\IEntrySegmentContextAccessor.cs" />
+    <Compile Include="Tracing\IExitSegmentContextAccessor.cs" />
+    <Compile Include="Tracing\ILocalSegmentContextAccessor.cs" />
     <Compile Include="Tracing\ISegmentContextFactory.cs" />
     <Compile Include="Tracing\ITracingContext.cs" />
     <Compile Include="Tracing\IUniqueIdGenerator.cs" />

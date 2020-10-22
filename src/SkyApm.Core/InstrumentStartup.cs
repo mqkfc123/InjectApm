@@ -39,13 +39,20 @@ namespace SkyApm.Core
             _services.Add(new SegmentReportService(configAccessor, segmentDispatcher, runtimeEnvironment, loggerFactory));
 
             IUniqueIdGenerator uniqueIdGenerator = new UniqueIdGenerator(runtimeEnvironment);
-            ISegmentContextFactory segmentContextFactory = new SegmentContextFactory(runtimeEnvironment, uniqueIdGenerator);
+
+
+            IEntrySegmentContextAccessor entrySegmentContextAccessor = new EntrySegmentContextAccessor();
+            ILocalSegmentContextAccessor localSegmentContextAccessor = new LocalSegmentContextAccessor();
+            IExitSegmentContextAccessor exitSegmentContextAccessor = new ExitSegmentContextAccessor();
+            ISegmentContextFactory segmentContextFactory = new SegmentContextFactory(runtimeEnvironment, uniqueIdGenerator, entrySegmentContextAccessor, localSegmentContextAccessor, exitSegmentContextAccessor);
 
             ICarrierPropagator carrierPropagator = new CarrierPropagator(null, segmentContextFactory);
 
             ITracingContext tracingContext = new TracingContext(segmentContextFactory, carrierPropagator, segmentDispatcher);
 
             WorkContext.TracingContext = tracingContext;
+            WorkContext.EntrySegmentContextAccessor = entrySegmentContextAccessor;
+            WorkContext.SegmentContext = new List<Abstractions.Tracing.Segments.SegmentContext>();
 
             _logger = loggerFactory.CreateLogger(typeof(InstrumentStartup));
         }
