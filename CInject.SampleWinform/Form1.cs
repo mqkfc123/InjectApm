@@ -26,8 +26,17 @@ namespace CInject.SampleWinform
             //var context = _tracingContext.CreateEntrySegmentContext("btnChangeValue_JayJ1", new TextCarrierHeaderCollection(new Dictionary<string, string>()));
             //context.Span.AddTag("新节点1", "测试");
             //context.Span.AddLog(LogEvent.Message($"Worker running at: {DateTime.Now}"));
+            try
+            {
+                var a = "321q";
 
-            ChangeValue(txtInputValue.Text);
+                var b = Convert.ToInt32(a);
+                ChangeValue(txtInputValue.Text);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void ChangeValue(string textValue)

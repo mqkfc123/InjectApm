@@ -81,14 +81,26 @@ namespace CInject.Injections.Injectors
 
                 var parameters = _injection.Method.GetParameters();
                 var paramStr = "";
-                for (int i = 0; i < injection.Arguments.Length; i++)
+
+                Logger.Debug("Arguments:" + _injection.Arguments.Length);
+                for (int i = 0; i < _injection.Arguments.Length; i++)
                 {
-                    // if (_injection.Arguments[i].GetType())
-                    //  continue;
-                    if (_injection.Arguments[i].GetType().ToString() == "System.Windows.Forms.Button")
+                    if (_injection.Arguments[i] == null)
+                    {
+                        Logger.Debug($"_injection.Arguments[{parameters[i].Name}]: is null ");
                         continue;
+                    }
+
+                    if (_injection.Arguments[i].GetType().Name == "Button"
+                        || _injection.Arguments[i].GetType().Name == "ToolStripMenuItem"
+                        || _injection.Arguments[i].GetType().Name == "ButtonX")
+                    {
+                        Logger.Debug("_injection.parameters:" + parameters[i].Name);
+                        continue;
+                    }
 
                     paramStr += parameters[i].Name + ":" + Newtonsoft.Json.JsonConvert.SerializeObject(_injection.Arguments[i]) + " \r\n";
+
                 }
                 _context.Span.AddLog(new LogEvent($"Arguments ", paramStr));
 

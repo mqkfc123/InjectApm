@@ -139,13 +139,13 @@ namespace CInject.CLI
 
                                 for (int j = 0; j < methodDefinitions.Count; j++)
                                 {
-                                    var var1 = types[i].FullName + "." + methodDefinitions[j].Name;
 
-                                    if (_methodTargetItem.Count > 0 && !_methodTargetItem.Contains(var1.ToLower()))
-                                    {
-                                        continue;
-                                    }
+                                    //var var1 = types[i].FullName + "." + methodDefinitions[j].Name;
 
+                                    //if (_methodTargetItem.Count > 0 && !_methodTargetItem.Contains(var1.ToLower()))
+                                    //{
+                                    //    continue;
+                                    //}
                                     Type type = null;
                                     if (types[i].Name == "Program" && methodDefinitions[j].Name == "Main")
                                     {
@@ -157,6 +157,43 @@ namespace CInject.CLI
                                     }
 
                                     _mapping.Add(new InjectionMapping(assemblyTarget, methodDefinitions[j], type));
+
+
+                                   // 5W 1H
+
+                                    //var var1 = types[i].FullName + "." + methodDefinitions[j].Name;
+
+                                    //if (methodDefinitions[j].Name.ToLower().Contains("_click"))
+                                    //{
+                                    //    if (methodDefinitions[j].Parameters.Count >= 2 &&
+                                    //        methodDefinitions[j].Parameters[0].ParameterType.Name == "Object" &&
+                                    //        methodDefinitions[j].Parameters[1].ParameterType.Name == "EventArgs")
+                                    //    {
+                                    //        Type type = _injectTypeDict["ObjectValueInject"];
+                                    //        _mapping.Add(new InjectionMapping(assemblyTarget, methodDefinitions[j], type));
+                                    //    }
+                                    //}
+                                    //else
+                                    //{
+                                    //    if (_methodTargetItem.Count > 0 && !_methodTargetItem.Contains(var1.ToLower()))
+                                    //    {
+                                    //        continue;
+                                    //    }
+
+                                    //    Type type = null;
+                                    //    if (types[i].Name == "Program" && methodDefinitions[j].Name == "Main")
+                                    //    {
+                                    //        type = _injectTypeDict["Startup"];
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        type = _injectTypeDict["ObjectValueInject"];
+                                    //    }
+
+                                    //    _mapping.Add(new InjectionMapping(assemblyTarget, methodDefinitions[j], type));
+
+                                    //}
+
                                 }
                             }
                         }
