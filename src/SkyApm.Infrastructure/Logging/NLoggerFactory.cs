@@ -16,9 +16,9 @@ namespace SkyApm.Infrastructure.Logging
 
         }
 
-        public SkyApm.Logging.ILogger CreateLogger(Type type)
+        public SkyApm.Logging.ILogger CreateLogger(Logger logger)
         {
-            return new NLogger(LogManager.GetCurrentClassLogger(type));
+            return new NLogger(logger);
         }
 
     }

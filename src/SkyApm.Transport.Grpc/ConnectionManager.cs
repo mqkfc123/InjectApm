@@ -26,7 +26,7 @@ namespace SkyApm.Transport.Grpc
 
         public ConnectionManager(ILoggerFactory loggerFactory, IConfigAccessor configAccessor)
         {
-            _logger = loggerFactory.CreateLogger(typeof(ConnectionManager));
+            _logger = loggerFactory.CreateLogger(NLog.LogManager.GetCurrentClassLogger());
             _config = configAccessor.Get<GrpcConfig>();
         }
 

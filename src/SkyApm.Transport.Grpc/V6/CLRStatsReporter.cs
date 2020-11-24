@@ -25,7 +25,7 @@ namespace SkyApm.Transport.Grpc.V6
             IConfigAccessor configAccessor, IRuntimeEnvironment runtimeEnvironment)
         {
             _connectionManager = connectionManager;
-            _logger = loggerFactory.CreateLogger(typeof(CLRStatsReporter));
+            _logger = loggerFactory.CreateLogger(NLog.LogManager.GetCurrentClassLogger());
             _config = configAccessor.Get<GrpcConfig>();
             _runtimeEnvironment = runtimeEnvironment;
         }

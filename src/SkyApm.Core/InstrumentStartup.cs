@@ -20,7 +20,7 @@ namespace SkyApm.Core
         {
             //_observer = observer;
             _services = services;
-            _logger = loggerFactory.CreateLogger(typeof(InstrumentStartup));
+            _logger = loggerFactory.CreateLogger(NLog.LogManager.GetCurrentClassLogger());
         }
 
         public async Task StartAsync(CancellationToken cancellationToken = default(CancellationToken))

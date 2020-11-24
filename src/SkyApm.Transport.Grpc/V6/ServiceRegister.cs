@@ -32,7 +32,7 @@ namespace SkyApm.Transport.Grpc.V6
         {
             _connectionManager = connectionManager;
             _config = configAccessor.Get<GrpcConfig>();
-            _logger = loggerFactory.CreateLogger(typeof(ServiceRegister));
+            _logger = loggerFactory.CreateLogger(NLog.LogManager.GetCurrentClassLogger());
         }
 
         public async Task<NullableValue> RegisterServiceAsync(ServiceRequest serviceRequest,
