@@ -21,7 +21,7 @@ namespace SkyApm.Transport.Grpc.V6
             IConfigAccessor configAccessor)
         {
             _config = configAccessor.Get<GrpcConfig>();
-            _logger = loggerFactory.CreateLogger(typeof(PingCaller));
+            _logger = loggerFactory.CreateLogger(NLog.LogManager.GetCurrentClassLogger());
         }
 
         public void PingAsync(PingRequest request)

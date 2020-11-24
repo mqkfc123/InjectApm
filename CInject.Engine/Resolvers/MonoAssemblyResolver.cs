@@ -75,7 +75,6 @@ namespace CInject.Engine.Resolvers
 
         internal List<TypeDefinition> FindStaticClasses()
         { 
-
             return _assembly.MainModule.Types.Where(type => type.Methods.Count(x => x.IsStatic) > 0).ToList();
         }
 
@@ -153,7 +152,7 @@ namespace CInject.Engine.Resolvers
 
             if (injection.InjectionType.Name == "Startup")
             {
-                return PatchMethod2(methodDefinition, injection);
+                return SimplePatchMethod(methodDefinition, injection);
             }
             else
             {
@@ -375,9 +374,8 @@ namespace CInject.Engine.Resolvers
             //TODO: Find Exit Statements 
         }
 
-        public bool PatchMethod2(MethodDefinition method, Injection injection)
+        public bool SimplePatchMethod(MethodDefinition method, Injection injection)
         {
-            bool success = true;
             if (method.IsConstructor ||
                 method.IsAbstract ||
                 method.IsSetter ||
@@ -395,20 +393,7 @@ namespace CInject.Engine.Resolvers
                 var constructor = injection.Constructor;
                 constructor.Resolve();
 
-                bool isInjected = false;
-                foreach (var x in method.Body.Variables)
-                {
-                    if (x.VariableType.Scope == injection.TypeReference.Scope
-                        && x.VariableType.FullName == injection.TypeReference.FullName
-                        && x.VariableType.Namespace == injection.TypeReference.Namespace)
-                    {
-                        isInjected = true;
-                    }
-                }
-
-
                 MethodInjector editor = new MethodInjector(method);
-
                 VariableDefinition vInject = editor.AddVariable(injection.TypeReference);
                 VariableDefinition vInjection = editor.AddVariable(_cinjection);
                 VariableDefinition vObjectArray = editor.AddVariable(MonoExtensions.ImportType<object[]>(Assembly));
@@ -424,9 +409,7 @@ namespace CInject.Engine.Resolvers
                 editor.InsertBefore(firstExistingInstruction, editor.Create(OpCodes.Callvirt, injection.OnInvoke));
                 #endregion
 
-
                 method.Resolve();
-
                 SendMessage("Injected method " + method, MessageType.Output);
             }
             catch (Exception ex)
@@ -437,8 +420,6 @@ namespace CInject.Engine.Resolvers
 
             return true;
         }
-
-
 
         public bool Save()
         {

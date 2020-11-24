@@ -17,7 +17,7 @@ namespace SkyApm.Abstractions
         protected ExecutionService(IRuntimeEnvironment runtimeEnvironment, ILoggerFactory loggerFactory)
         {
             RuntimeEnvironment = runtimeEnvironment;
-            Logger = loggerFactory.CreateLogger(GetType());
+            Logger = loggerFactory.CreateLogger(NLog.LogManager.GetCurrentClassLogger());
         }
 
         public void StartAsync()

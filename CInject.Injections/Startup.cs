@@ -11,7 +11,6 @@ namespace CInject.Injections
         {
             try
             {
-
                 InstrumentStartup startup = new InstrumentStartup();
                 startup.StartAsync();
             }

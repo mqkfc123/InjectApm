@@ -18,7 +18,7 @@ namespace SkyApm.Transport.Grpc.V6
         public CLRStatsReporter(ILoggerFactory loggerFactory,
             IConfigAccessor configAccessor, IRuntimeEnvironment runtimeEnvironment)
         {
-            _logger = loggerFactory.CreateLogger(typeof(CLRStatsReporter));
+            _logger = loggerFactory.CreateLogger(NLog.LogManager.GetCurrentClassLogger());
             _config = configAccessor.Get<GrpcConfig>();
             _runtimeEnvironment = runtimeEnvironment;
         }

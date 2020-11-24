@@ -21,7 +21,7 @@ namespace SkyApm.Transport.Grpc.V6
             ILoggerFactory loggerFactory)
         {
             _config = configAccessor.Get<GrpcConfig>();
-            _logger = loggerFactory.CreateLogger(typeof(SegmentReporter));
+            _logger = loggerFactory.CreateLogger(NLog.LogManager.GetCurrentClassLogger());
         }
 
         public void ReportAsync(ICollection<SegmentRequest> segmentRequests)

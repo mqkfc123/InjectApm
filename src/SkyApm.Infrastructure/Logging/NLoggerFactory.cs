@@ -13,12 +13,12 @@ namespace SkyApm.Infrastructure.Logging
 
         public NLoggerFactory()
         {
-            LogManager.Configuration= new XmlLoggingConfiguration($"{AppDomain.CurrentDomain.BaseDirectory}NLog.config");
+            LogManager.Configuration = new XmlLoggingConfiguration($"{AppDomain.CurrentDomain.BaseDirectory}NLog.config");
         }
 
-        public ILogger CreateLogger(Type type)
+        public ILogger CreateLogger(Logger logger)
         {
-            return new NLogger(LogManager.GetCurrentClassLogger());
+            return new NLogger(logger);
         }
 
     }

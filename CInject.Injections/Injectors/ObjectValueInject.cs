@@ -14,7 +14,7 @@ namespace CInject.Injections.Injectors
     [DependentFiles("ObjectSearch.xml", "CInject.Injections.dll", "LogInject.log4net.xml", "log4net.dll")]
     public class ObjectValueInject : ICInject
     {
-        private ITracingContext  _tracingContext = WorkContext.TracingContext;
+        private ITracingContext _tracingContext = WorkContext.TracingContext;
 
         public class ObjectSearch
         {
@@ -52,13 +52,13 @@ namespace CInject.Injections.Injectors
                 if (!injection.IsValid())
                     return;
 
-
                 var objectSearch = CachedSerializer.Deserialize<ObjectSearch>(File.ReadAllText(FileName), Encoding.UTF8);
                 if (objectSearch == null || objectSearch.PropertyNames == null)
                     return;
 
                 Logger.Info("============Method==========" + _injection.Method.Name);
 
+                _context.Span.AddTag("Assembly", _injection.ExecutingAssembly.FullName);
                 _context.Span.AddTag("Method", _injection.Method.Name);
 
                 var method = "";

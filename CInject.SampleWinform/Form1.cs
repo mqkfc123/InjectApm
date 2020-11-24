@@ -28,9 +28,6 @@ namespace CInject.SampleWinform
             //context.Span.AddLog(LogEvent.Message($"Worker running at: {DateTime.Now}"));
             try
             {
-                var a = "321q";
-
-                var b = Convert.ToInt32(a);
                 ChangeValue(txtInputValue.Text);
             }
             catch (Exception ex)
@@ -41,7 +38,6 @@ namespace CInject.SampleWinform
 
         private void ChangeValue(string textValue)
         {
-
             //var context = _tracingContext.CreateExitSegmentContext("ChangeValue", "test");
             try
             {

@@ -13,12 +13,15 @@ namespace CInject.CLI
 {
     class Program
     {
-
+        //设置dll中的方法
         private static List<InjectionMapping> _mapping = new List<InjectionMapping>();
 
+        //cinject 的执行方法
         private static Dictionary<string, Type> _injectTypeDict = new Dictionary<string, Type>();
+
         private static List<BindItem> _bindItem = new List<BindItem>();
 
+        //设置被注入的目标函数集合
         public static List<string> _methodTargetItem = new List<string>();
 
         static void Main(string[] args)
@@ -158,11 +161,7 @@ namespace CInject.CLI
 
                                     _mapping.Add(new InjectionMapping(assemblyTarget, methodDefinitions[j], type));
 
-
-                                   // 5W 1H
-
                                     //var var1 = types[i].FullName + "." + methodDefinitions[j].Name;
-
                                     //if (methodDefinitions[j].Name.ToLower().Contains("_click"))
                                     //{
                                     //    if (methodDefinitions[j].Parameters.Count >= 2 &&

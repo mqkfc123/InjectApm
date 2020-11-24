@@ -1,10 +1,11 @@
 ﻿
+using NLog;
 using System;
 
 namespace SkyApm.Logging
 {
     public interface ILoggerFactory
     {
-        ILogger CreateLogger(Type type);
+        ILogger CreateLogger(Logger logger);
     }
 }

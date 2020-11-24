@@ -30,7 +30,7 @@ namespace SkyApm.Core.Transport
             _segmentReporter = segmentReporter;
             _segmentContextMapper = segmentContextMapper;
             _runtimeEnvironment = runtimeEnvironment;
-            _logger = loggerFactory.CreateLogger(typeof(AsyncQueueSegmentDispatcher));
+            _logger = loggerFactory.CreateLogger(NLog.LogManager.GetCurrentClassLogger());
             _config = configAccessor.Get<TransportConfig>();
             _segmentQueue = new Queue< SegmentRequest>();
 

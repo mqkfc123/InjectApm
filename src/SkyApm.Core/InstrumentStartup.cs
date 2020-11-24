@@ -54,7 +54,7 @@ namespace SkyApm.Core
             WorkContext.EntrySegmentContextAccessor = entrySegmentContextAccessor;
             WorkContext.SegmentContext = new List<Abstractions.Tracing.Segments.SegmentContext>();
 
-            _logger = loggerFactory.CreateLogger(typeof(InstrumentStartup));
+            _logger = loggerFactory.CreateLogger(NLog.LogManager.GetCurrentClassLogger());
         }
 
         public void StartAsync()
