@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace CInject.CLI
 {
@@ -99,6 +100,7 @@ namespace CInject.CLI
                             _injectTypeDict.Add(t.Name.ToString(), t);
                         }
                     }
+
                 }
             }
             catch (Exception ex)
@@ -131,26 +133,25 @@ namespace CInject.CLI
                         var tag = new BindItem { Assembly = assemblyTarget, Method = null };
 
                         //class
-                        List<TypeDefinition> types = assemblyTarget.FindClasses();
+                        List<TypeDefinition> types = TypeDefinitionFilter(assemblyTarget.FindClasses());
 
                         for (int i = 0; i < types.Count; i++)
                         {
                             if (types[i].HasMethods)
                             {
+
                                 //method 
                                 var methodDefinitions = MonoExtensions.GetMethods(types[i], false);
 
                                 for (int j = 0; j < methodDefinitions.Count; j++)
                                 {
+                                    if (methodDefinitions[j].Name.Contains("_Tick")|| methodDefinitions[j].Name == "InitializeComponent"|| methodDefinitions[j].Name == "Dispose")
+                                    {
+                                        continue;
+                                    }
 
-                                    //var var1 = types[i].FullName + "." + methodDefinitions[j].Name;
-
-                                    //if (_methodTargetItem.Count > 0 && !_methodTargetItem.Contains(var1.ToLower()))
-                                    //{
-                                    //    continue;
-                                    //}
                                     Type type = null;
-                                    if (types[i].Name == "Program" && methodDefinitions[j].Name == "Main")
+                                    if (types[i].FullName == "CInject.SampleWinform.Program" && methodDefinitions[j].Name == "Main")
                                     {
                                         type = _injectTypeDict["Startup"];
                                     }
@@ -158,40 +159,7 @@ namespace CInject.CLI
                                     {
                                         type = _injectTypeDict["ObjectValueInject"];
                                     }
-
                                     _mapping.Add(new InjectionMapping(assemblyTarget, methodDefinitions[j], type));
-
-                                    //var var1 = types[i].FullName + "." + methodDefinitions[j].Name;
-                                    //if (methodDefinitions[j].Name.ToLower().Contains("_click"))
-                                    //{
-                                    //    if (methodDefinitions[j].Parameters.Count >= 2 &&
-                                    //        methodDefinitions[j].Parameters[0].ParameterType.Name == "Object" &&
-                                    //        methodDefinitions[j].Parameters[1].ParameterType.Name == "EventArgs")
-                                    //    {
-                                    //        Type type = _injectTypeDict["ObjectValueInject"];
-                                    //        _mapping.Add(new InjectionMapping(assemblyTarget, methodDefinitions[j], type));
-                                    //    }
-                                    //}
-                                    //else
-                                    //{
-                                    //    if (_methodTargetItem.Count > 0 && !_methodTargetItem.Contains(var1.ToLower()))
-                                    //    {
-                                    //        continue;
-                                    //    }
-
-                                    //    Type type = null;
-                                    //    if (types[i].Name == "Program" && methodDefinitions[j].Name == "Main")
-                                    //    {
-                                    //        type = _injectTypeDict["Startup"];
-                                    //    }
-                                    //    else
-                                    //    {
-                                    //        type = _injectTypeDict["ObjectValueInject"];
-                                    //    }
-
-                                    //    _mapping.Add(new InjectionMapping(assemblyTarget, methodDefinitions[j], type));
-
-                                    //}
 
                                 }
                             }
@@ -223,7 +191,6 @@ namespace CInject.CLI
                 }
 
                 //IEnumerable<MonoAssemblyResolver> assemblies = _mapping.Select(x => x.Assembly).Distinct();
-
                 foreach (MonoAssemblyResolver assembly in assemblies)
                     assembly.Save();
 
@@ -234,10 +201,15 @@ namespace CInject.CLI
             }
         }
 
+        private static List<TypeDefinition> TypeDefinitionFilter(List<TypeDefinition> types)
+        {
+            //System.Windows.Forms.Form
+            //System.Object
+            return types.Where(t => t.HasMethods && (t.BaseType.FullName == "System.Windows.Forms.Form"
+             || (t.BaseType.FullName == "System.Object" && (t.Name == "Program" || t.Name.Contains("Handler") || t.Name.Contains("Manager") || t.Name.Contains("Service"))))).ToList();
 
+        }
 
     }
-
-
 
 }

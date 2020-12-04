@@ -46,7 +46,7 @@ namespace SkyApm.Core.Tracing
             {
                 return carrier;
             }
-
+          
             return carrier;
 
             foreach (var formatter in _carrierFormatters)

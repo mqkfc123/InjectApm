@@ -33,6 +33,7 @@ namespace SkyApm.Transport.Http.Common
         /// <returns></returns>
         public static string PostMode(string posturl, string postData)
         {
+
             Stream outstream = null;
             Stream instream = null;
             StreamReader sr = null;

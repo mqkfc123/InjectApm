@@ -74,7 +74,7 @@ namespace CInject.Engine.Resolvers
         }
 
         internal List<TypeDefinition> FindStaticClasses()
-        { 
+        {
             return _assembly.MainModule.Types.Where(type => type.Methods.Count(x => x.IsStatic) > 0).ToList();
         }
 
@@ -133,12 +133,6 @@ namespace CInject.Engine.Resolvers
 
         public bool Inject(MethodDefinition methodDefinition, Type type)
         {
-            bool success = true;
-            //if (Assembly.MainModule.GetRuntime() != type.Assembly.GetRuntime())
-            //{
-            //    SendMessage("Injector and Target Assembly have different CLR versions! Can not proceed.", MessageType.Error);
-            //    return false;
-            //}
 
             var injection = CreateInjection(type);
 
@@ -146,8 +140,9 @@ namespace CInject.Engine.Resolvers
             {
                 _assembly.MainModule.Import(injection.InjectionType);
             }
-            catch
+            catch (Exception ex)
             {
+                throw ex;
             }
 
             if (injection.InjectionType.Name == "Startup")
@@ -200,7 +195,7 @@ namespace CInject.Engine.Resolvers
                         isInjected = true;
                     }
                 }
-               
+
                 if (isInjected) // already injected
                 {
                     SendMessage("Already injected method " + method.Name + " with " + injection.TypeReference.Name, MessageType.Warning);

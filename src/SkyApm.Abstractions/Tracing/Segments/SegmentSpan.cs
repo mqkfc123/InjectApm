@@ -87,7 +87,13 @@ namespace SkyApm.Abstractions.Tracing.Segments
         {
             var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             var t3 = Convert.ToInt64((DateTime.Now - epoch).TotalMilliseconds);
-            EndTime = t3;
+            var total = 0;
+            foreach (var tag in this.Tags)
+            {
+                if (tag.Key == "MBET")
+                    total += Convert.ToInt32(tag.Value);
+            }
+            EndTime = t3 - total;
         }
     }
 
