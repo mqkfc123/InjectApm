@@ -12,6 +12,16 @@ namespace SkyApm.Abstractions.Transport
         public SegmentObjectRequest Segment { get; set; }
     }
 
+    /// <summary>
+    /// V3 
+    /// </summary>
+    public class TraceSegmentRequest
+    {
+        public IEnumerable<UniqueIdRequest> UniqueIds { get; set; }
+
+        public TraceSegmentObjectRequest Segment { get; set; }
+    }
+
     public class UniqueIdRequest
     {
         public long Part1 { get; set; }
@@ -33,6 +43,20 @@ namespace SkyApm.Abstractions.Transport
         public int ServiceId { get; set; }
 
         public int ServiceInstanceId { get; set; }
+
+        public IList<SpanRequest> Spans { get; set; } = new List<SpanRequest>();
+    }
+
+    /// <summary>
+    /// V3 
+    /// </summary>
+    public class TraceSegmentObjectRequest
+    {
+        public UniqueIdRequest SegmentId { get; set; }
+
+        public int ApplicationId { get; set; }
+
+        public int ApplicationInstanceId { get; set; }
 
         public IList<SpanRequest> Spans { get; set; } = new List<SpanRequest>();
     }
@@ -59,7 +83,7 @@ namespace SkyApm.Abstractions.Transport
 
         public bool IsError { get; set; }
 
-        public IList<SegmentReferenceRequest> References { get; } = new List<SegmentReferenceRequest>();
+        public IList<TraceSegmentReferenceRequest> References { get; } = new List<TraceSegmentReferenceRequest>();
 
         public IList<KeyValuePair<string, string>> Tags { get; } = new List<KeyValuePair<string, string>>();
 
@@ -84,6 +108,30 @@ namespace SkyApm.Abstractions.Transport
 
         public StringOrIntValue NetworkAddress { get; set; }
     }
+
+
+    /// <summary>
+    /// V3 segment
+    /// </summary>
+    public class TraceSegmentReferenceRequest
+    {
+        public UniqueIdRequest ParentTraceSegmentId { get; set; }
+
+        public int ParentApplicationInstanceId { get; set; }
+
+        public int ParentSpanId { get; set; }
+
+        public int EntryApplicationInstanceId { get; set; }
+
+        public int RefType { get; set; }
+
+        public StringOrIntValue ParentServiceName { get; set; }
+
+        public StringOrIntValue EntryServiceName { get; set; }
+
+        public StringOrIntValue NetworkAddress { get; set; }
+    }
+
 
     public class LogDataRequest
     {

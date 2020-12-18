@@ -151,9 +151,13 @@ namespace CInject.CLI
                                     }
 
                                     Type type = null;
-                                    if (types[i].FullName == "CInject.SampleWinform.Program" && methodDefinitions[j].Name == "Main")
+                                    if ((types[i].FullName == "CInject.SampleWinform.Program" && methodDefinitions[j].Name == "Main") || (types[i].FullName == "Com.Yilz.OutpatientEMR.Main.Program" && methodDefinitions[j].Name == "Main"))
                                     {
                                         type = _injectTypeDict["Startup"];
+                                    }
+                                    else if (types[i].FullName == "Com.Yilz.OutpatientEMR.Main.Program")
+                                    {
+                                        continue;
                                     }
                                     else
                                     {

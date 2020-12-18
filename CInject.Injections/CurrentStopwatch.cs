@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SkyApm.Abstractions.Context.Trace;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -7,6 +8,7 @@ namespace CInject.Injections
 {
     public class CurrentStopwatch
     {
+
         public Stopwatch Stopwatch { get; set; }
 
         public double ChildElapsed { get; set; }

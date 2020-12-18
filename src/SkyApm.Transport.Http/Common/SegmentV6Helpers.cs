@@ -67,7 +67,7 @@ namespace SkyApm.Transport.Http.Common
 
             //Add
             spanObject.tags.AddRange(request.Tags.Select(x => new KeyStringValuePair { key = x.Key, value = x.Value }));
-            spanObject.refs.AddRange(request.References.Select(MapToSegmentReference).ToArray());
+            //spanObject.refs.AddRange(request.References.Select(MapToSegmentReference).ToArray());
             spanObject.logs.AddRange(request.Logs.Select(MapToLogMessage).ToArray());
 
             return spanObject;

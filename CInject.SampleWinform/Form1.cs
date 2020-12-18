@@ -1,6 +1,10 @@
-﻿using SkyApm.Abstractions.Tracing;
+﻿using SkyApm.Abstractions.Common;
+using SkyApm.Abstractions.Context.Utils;
+using SkyApm.Abstractions.Tracing;
 using SkyApm.Abstractions.Tracing.Segments;
+using SkyApm.Abstractions.Utils;
 using SkyApm.Core;
+using SkyApm.Core.Context;
 using SkyApm.Core.Tracing;
 using System;
 using System.Collections.Generic;
@@ -21,6 +25,32 @@ namespace CInject.SampleWinform
         {
             InitializeComponent();
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            //var httpRequestSpan = ContextManager.CreateEntrySpan("Form1_Load", null);
+            //Thread.Sleep(1000);
+
+            //httpRequestSpan?.AsHttp();
+            ////httpRequestSpan.SetComponent(ComponentsDefine.AspNet);
+            //httpRequestSpan?.Tag("ddddd", "ffffff");
+            //httpRequestSpan?.Log(DateTimeOffsetUtcNow.ToUnixTimeMilliseconds(),
+            //    new Dictionary<string, object>
+            //    {
+            //        {"event", "AspNet BeginRequest"},
+            //        {"message", $"Request starting xxxxxxxxxxx "}
+            //    });
+
+            //httpRequestSpan?.Log(DateTimeOffsetUtcNow.ToUnixTimeMilliseconds(),
+            // new Dictionary<string, object>
+            // {
+            //        {"event", "AspNet EndRequest"},
+            //        {"message", $"Request finished "}
+            // });
+
+            //ContextManager.StopSpan(httpRequestSpan);
+        }
+
 
         private void btnChangeValue_Click(object sender, EventArgs e)
         {
@@ -107,6 +137,118 @@ namespace CInject.SampleWinform
             MessageBox.Show("sample");
             Thread.Sleep(1000);
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+           // var httpRequestSpan = ContextManager.CreateEntrySpan("button22_Click", null);
+            Thread.Sleep(1000);
+            button22("button22");
+            button44("button44");
+            // httpRequestSpan.AsHttp();
+            //httpRequestSpan.SetComponent(ComponentsDefine.AspNet);
+            //httpRequestSpan.Tag("ddddd", "ffffff");
+            //httpRequestSpan.Log(DateTimeOffsetUtcNow.ToUnixTimeMilliseconds(),
+            //    new Dictionary<string, object>
+            //    {
+            //        {"event", "AspNet BeginRequest"},
+            //        {"message", $"Request starting xxxxxxxxxxx "}
+            //    });
+
+            //httpRequestSpan.Log(DateTimeOffsetUtcNow.ToUnixTimeMilliseconds(),
+            // new Dictionary<string, object>
+            // {
+            //        {"event", "AspNet EndRequest"},
+            //        {"message", $"Request finished "}
+            // });
+
+            //ContextManager.StopSpan(httpRequestSpan);
+
+        }
+
+
+        private void button22(string textValue)
+        {
+
+            //var httpRequestSpan = ContextManager.CreateLocalSpan("button22");
+            Thread.Sleep(1000);
+            button33("");
+
+            //httpRequestSpan.AsHttp();
+            ////httpRequestSpan.SetComponent(ComponentsDefine.AspNet);
+            //httpRequestSpan.Tag("LocalSpan", "ffffff");
+            //httpRequestSpan.Log(DateTimeOffsetUtcNow.ToUnixTimeMilliseconds(),
+            //    new Dictionary<string, object>
+            //    {
+            //        {"event", "AspNet BeginRequest"},
+            //        {"message", $"Request starting xxxxxxxxxxx "}
+            //    });
+
+            //httpRequestSpan.Log(DateTimeOffsetUtcNow.ToUnixTimeMilliseconds(),
+            // new Dictionary<string, object>
+            // {
+            //        {"event", "AspNet EndRequest"},
+            //        {"message", $"Request finished "}
+            // });
+
+            //ContextManager.StopSpan(httpRequestSpan);
+
+        }
+
+
+        private void button33(string textValue)
+        {
+
+            //var httpRequestSpan = ContextManager.CreateLocalSpan("button33");
+
+            //httpRequestSpan.AsHttp();
+            ////httpRequestSpan.SetComponent(ComponentsDefine.AspNet);
+            //httpRequestSpan.Tag("LocalSpan33", "button33");
+            //httpRequestSpan.Log(DateTimeOffsetUtcNow.ToUnixTimeMilliseconds(),
+            //    new Dictionary<string, object>
+            //    {
+            //        {"event", "AspNet BeginRequest"},
+            //        {"message", $"Request starting xxxxxxxxxxx "}
+            //    });
+
+            //httpRequestSpan.Log(DateTimeOffsetUtcNow.ToUnixTimeMilliseconds(),
+            // new Dictionary<string, object>
+            // {
+            //        {"event", "AspNet EndRequest"},
+            //        {"message", $"Request finished "}
+            // });
+
+            //ContextManager.StopSpan(httpRequestSpan);
+            Thread.Sleep(1000);
+        }
+
+        private void button44(string textValue)
+        {
+            Thread.Sleep(1000);
+            //var httpRequestSpan = ContextManager.CreateLocalSpan("button44");
+
+            //httpRequestSpan.AsHttp();
+            ////httpRequestSpan.SetComponent(ComponentsDefine.AspNet);
+            //httpRequestSpan.Tag("LocalSpan44", "button44");
+            //httpRequestSpan.Log(DateTimeOffsetUtcNow.ToUnixTimeMilliseconds(),
+            //    new Dictionary<string, object>
+            //    {
+            //        {"event", "AspNet BeginRequest"},
+            //        {"message", $"Request starting xxxxxxxxxxx "}
+            //    });
+
+            //httpRequestSpan.Log(DateTimeOffsetUtcNow.ToUnixTimeMilliseconds(),
+            // new Dictionary<string, object>
+            // {
+            //        {"event", "AspNet EndRequest"},
+            //        {"message", $"Request finished "}
+            // });
+
+            //ContextManager.StopSpan(httpRequestSpan);
+
+        }
+
+        
     }
 
 }

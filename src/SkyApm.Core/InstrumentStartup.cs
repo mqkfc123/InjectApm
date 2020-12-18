@@ -9,6 +9,7 @@ using SkyApm.Infrastructure.Configuration;
 using SkyApm.Infrastructure.Logging;
 using SkyApm.Logging;
 using SkyApm.Transport.Grpc.V6;
+using SkyApm.Transport.Http.V6;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -29,14 +30,21 @@ namespace SkyApm.Core
             ILoggerFactory loggerFactory = new NLoggerFactory();
             ISegmentContextMapper segmentContextMapper = new SegmentContextMapper();
             ISegmentReporter segmentReporter = new SegmentReporter(configAccessor, loggerFactory);
+            //trace
+            ISkyWalkingClient skyWalkingClient = new TraceRepoter(configAccessor, loggerFactory);
 
             ISegmentDispatcher segmentDispatcher = new AsyncQueueSegmentDispatcher(configAccessor, segmentReporter, runtimeEnvironment, segmentContextMapper, loggerFactory);
             IServiceRegister serviceRegister = new ServiceRegister(configAccessor, loggerFactory);
             IPingCaller pingCaller = new PingCaller(loggerFactory, configAccessor);
+            //trace
+            ITraceDispatcher traceDispatcher = new AsyncQueueTraceDispatcher(configAccessor, skyWalkingClient, loggerFactory);
+
 
             _services.Add(new RegisterService(configAccessor, serviceRegister, runtimeEnvironment, loggerFactory));
             _services.Add(new PingService(configAccessor, pingCaller, runtimeEnvironment, loggerFactory));
             _services.Add(new SegmentReportService(configAccessor, segmentDispatcher, runtimeEnvironment, loggerFactory));
+            //trace
+            _services.Add(new TraceSegmentTransportService(configAccessor, traceDispatcher, runtimeEnvironment, loggerFactory));
 
             IUniqueIdGenerator uniqueIdGenerator = new UniqueIdGenerator(runtimeEnvironment);
 
@@ -53,6 +61,7 @@ namespace SkyApm.Core
             WorkContext.TracingContext = tracingContext;
             WorkContext.EntrySegmentContextAccessor = entrySegmentContextAccessor;
             WorkContext.SegmentContext = new List<Abstractions.Tracing.Segments.SegmentContext>();
+            WorkContext.RuntimeEnvironment = runtimeEnvironment;
 
             _logger = loggerFactory.CreateLogger(NLog.LogManager.GetCurrentClassLogger());
         }

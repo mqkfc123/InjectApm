@@ -25,7 +25,6 @@ namespace SkyApm.Abstractions
             //source
             _timer = new Timer(Callback, null, DueTime, Period);
             Logger.Information($"Loaded instrument service [{GetType().FullName}].");
-
         }
 
         public void StopAsync()

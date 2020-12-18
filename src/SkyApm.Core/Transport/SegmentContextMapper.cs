@@ -41,17 +41,17 @@ namespace SkyApm.Core.Transport
             };
             foreach (var reference in segmentContext.References)
             {
-                span.References.Add(new SegmentReferenceRequest
-                {
-                    ParentSegmentId = MapUniqueId(reference.ParentSegmentId),
-                    ParentServiceInstanceId = reference.ParentServiceInstanceId,
-                    ParentSpanId = reference.ParentSpanId,
-                    ParentEndpointName = reference.ParentEndpoint,
-                    EntryServiceInstanceId = reference.EntryServiceInstanceId,
-                    EntryEndpointName = reference.EntryEndpoint,
-                    NetworkAddress = reference.NetworkAddress,
-                    RefType = (int)reference.Reference
-                });
+                //span.References.Add(new SegmentReferenceRequest
+                //{
+                //    ParentSegmentId = MapUniqueId(reference.ParentSegmentId),
+                //    ParentServiceInstanceId = reference.ParentServiceInstanceId,
+                //    ParentSpanId = reference.ParentSpanId,
+                //    ParentEndpointName = reference.ParentEndpoint,
+                //    EntryServiceInstanceId = reference.EntryServiceInstanceId,
+                //    EntryEndpointName = reference.EntryEndpoint,
+                //    NetworkAddress = reference.NetworkAddress,
+                //    RefType = (int)reference.Reference
+                //});
             }
                 
 

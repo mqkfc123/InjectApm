@@ -54,7 +54,25 @@
     <Compile Include="Common\DnsHelpers.cs" />
     <Compile Include="Common\GCHelpers.cs" />
     <Compile Include="Common\PlatformInformation.cs" />
+    <Compile Include="Context\ContextManager.cs" />
+    <Compile Include="Context\ContextSnapshot.cs" />
+    <Compile Include="Context\Ids\DistributedTraceIdCollection.cs" />
+    <Compile Include="Context\Ids\GlobalIdGenerator.cs" />
+    <Compile Include="Context\Ids\NewDistributedTraceId.cs" />
+    <Compile Include="Context\Ids\PropagatedTraceId.cs" />
+    <Compile Include="Context\IgnoredTracerContext.cs" />
+    <Compile Include="Context\Tag\StringTag.cs" />
+    <Compile Include="Context\Trace\EntrySpan.cs" />
+    <Compile Include="Context\Trace\ExitSpan.cs" />
+    <Compile Include="Context\Trace\LocalSpan.cs" />
+    <Compile Include="Context\Trace\NoopEntrySpan.cs" />
+    <Compile Include="Context\Trace\NoopExitSpan.cs" />
+    <Compile Include="Context\Trace\NoopSpan.cs" />
+    <Compile Include="Context\Trace\TraceSegment.cs" />
+    <Compile Include="Context\Trace\TraceSegmentRef.cs" />
+    <Compile Include="Context\TracingContext.cs" />
     <Compile Include="CoreModule.cs" />
+    <Compile Include="DefaultSampler.cs" />
     <Compile Include="InstrumentStartup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RuntimeEnvironment.cs" />
@@ -62,6 +80,7 @@
     <Compile Include="Service\PingService.cs" />
     <Compile Include="Service\RegisterService.cs" />
     <Compile Include="Service\SegmentReportService.cs" />
+    <Compile Include="Service\TraceSegmentTransportService.cs" />
     <Compile Include="Tracing\Carrier.cs" />
     <Compile Include="Tracing\CarrierPropagator.cs" />
     <Compile Include="Tracing\EntrySegmentContextAccessor.cs" />
@@ -73,7 +92,9 @@
     <Compile Include="Tracing\TracingContext.cs" />
     <Compile Include="Tracing\UniqueIdGenerator.cs" />
     <Compile Include="Transport\AsyncQueueSegmentDispatcher.cs" />
+    <Compile Include="Transport\AsyncQueueTraceDispatcher.cs" />
     <Compile Include="Transport\SegmentContextMapper.cs" />
+    <Compile Include="Utils\AtomicInteger.cs" />
     <Compile Include="WorkContext.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +115,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

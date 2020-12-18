@@ -4,19 +4,17 @@ using System.Text;
 using CInject.Injections.Attributes;
 using CInject.Injections.Library;
 using System.IO;
-using SkyApm.Abstractions.Tracing;
-using SkyApm.Core.Tracing;
-using SkyApm.Abstractions.Tracing.Segments;
-using SkyApm.Core;
-using System.Threading;
-using System.Diagnostics;
+using SkyApm.Core.Context;
+using SkyApm.Abstractions.Context.Trace;
+using SkyApm.Abstractions.Context.Utils;
+using SkyApm.Abstractions.Utils;
 
 namespace CInject.Injections.Injectors
 {
     [DependentFiles("ObjectSearch.xml", "CInject.Injections.dll", "LogInject.log4net.xml", "log4net.dll")]
     public class ObjectValueInject : ICInject
     {
-        private ITracingContext _tracingContext = WorkContext.TracingContext;
+        //private ITracingContext _tracingContext = WorkContext.TracingContext;
 
         public class ObjectSearch
         {
@@ -27,8 +25,10 @@ namespace CInject.Injections.Injectors
         private DateTime _startTime;
         private CInjection _injection;
         private bool _disposed;
-        private SegmentContext _context;
+        //private SegmentContext _context;
         private CurrentStopwatch _parentStopwatch;
+
+        private ISpan _parentTraceSpan;
 
         public void OnInvoke(CInjection injection)
         {
@@ -36,16 +36,18 @@ namespace CInject.Injections.Injectors
             {
                 this._parentStopwatch = GlobalStopwatch.GetStopwatch();
                 GlobalStopwatch.Instance();
-
-                //Thread.CurrentThread.ManagedThreadId
-                if (WorkContext.SegmentContext.Count <= 0)
+                if (_parentStopwatch == null)
                 {
-                    _context = _tracingContext.CreateEntrySegmentContext(injection.Method.Name, new TextCarrierHeaderCollection(new Dictionary<string, string>()));
+                    Logger.Info("Entry");
+                    GlobalStopwatch.InstanceSpan(injection.Method.Name);
                 }
                 else
                 {
-                    _context = _tracingContext.CreateExitSegmentContext(injection.Method.Name, "");
+                    Logger.Info("Local");
+                    GlobalStopwatch.InstanceSpan(injection.Method.Name, "Local");
                 }
+                _parentTraceSpan = GlobalStopwatch.GetSpan();
+                _parentTraceSpan.AsHttp();
 
                 _injection = injection;
                 _startTime = DateTime.Now;
@@ -66,8 +68,8 @@ namespace CInject.Injections.Injectors
 
                 Logger.Info("============Method==========" + _injection.Method.ReflectedType.Namespace + "." + _injection.Method.DeclaringType.Name + "." + _injection.Method.Name);
 
-                _context.Span.AddTag("Assembly", _injection.Method.ReflectedType.Namespace + "." + _injection.Method.DeclaringType.Name);
-                _context.Span.AddTag("Method", _injection.Method.Name);
+                _parentTraceSpan.Tag("Assembly", _injection.Method.ReflectedType.Namespace + "." + _injection.Method.DeclaringType.Name);
+                _parentTraceSpan.Tag("Method", _injection.Method.Name);
 
                 var method = "";
                 var value = "";
@@ -85,7 +87,11 @@ namespace CInject.Injections.Injectors
                     }
                 }
                 if (!string.IsNullOrEmpty(value))
-                    _context.Span.AddLog(LogEvent.Event($"{injection.Method.Name} :{value}"));
+                    _parentTraceSpan.Log(DateTimeOffsetUtcNow.ToUnixTimeMilliseconds(),
+                        new Dictionary<string, object>
+                            {
+                                {injection.Method.Name,value }
+                            });
 
                 var parameters = _injection.Method.GetParameters();
 
@@ -115,10 +121,12 @@ namespace CInject.Injections.Injectors
                     }
                 }
 
-                _context.Span.AddLog(new LogEvent($"Arguments ", paramStr));
-
-                WorkContext.SegmentContext.Add(_context);
-
+                _parentTraceSpan.Log(DateTimeOffsetUtcNow.ToUnixTimeMilliseconds(),
+                    new Dictionary<string, object>
+                            {
+                                {"Arguments",paramStr }
+                            }
+                    );
             }
             catch (Exception ex)
             {
@@ -130,40 +138,53 @@ namespace CInject.Injections.Injectors
 
         public void OnComplete()
         {
-            if (_injection != null && _injection.IsValid())
+            try
             {
-                double elapsed = 0;
-                var _endTime = DateTime.Now;
-                Logger.Debug($"{ _injection.Method.Name} endTime:{_endTime}");
-
-                elapsed = GlobalStopwatch.Elapsed();
-
-                Logger.Debug($"========================模态窗口占用总时间========================{elapsed}ms");
-                if (this._parentStopwatch == null)
+                if (_injection != null && _injection.IsValid())
                 {
-                    Logger.Info(string.Format("{0} end executed in {1} mSec ", _injection.Method.Name, _endTime.Subtract(_startTime).TotalMilliseconds - GlobalStopwatch.GetStopwatch().ChildElapsed - elapsed));
-                    GlobalStopwatch.Reset();
-                }
-                else
-                {
-                    this._parentStopwatch.ChildElapsed += elapsed;
-                    this._parentStopwatch.ChildElapsed += GlobalStopwatch.GetStopwatch().ChildElapsed;
-                    Logger.Info(string.Format("{0} executed in {1} mSec ", _injection.Method.Name, _endTime.Subtract(_startTime).TotalMilliseconds - GlobalStopwatch.GetStopwatch().ChildElapsed - elapsed));
+                    double elapsed = 0;
+                    var _endTime = DateTime.Now;
+                    Logger.Debug($"{ _injection.Method.Name} endTime:{_endTime}");
 
-                    GlobalStopwatch.SetStopwatch(this._parentStopwatch);
-                }
-            
-                _context.Span.AddLog(LogEvent.Message($"OnComplete running at: {_endTime} ,executed in {_endTime.Subtract(_startTime).TotalMilliseconds}"));
+                    elapsed = GlobalStopwatch.Elapsed();
 
-                foreach (var context in WorkContext.SegmentContext)
-                {
-                    _tracingContext.Release(context);
-                }
+                    Logger.Debug($"========================模态窗口占用总时间========================{elapsed}ms");
 
-                WorkContext.SegmentContext.Clear();
+                    _parentTraceSpan.Log(DateTimeOffsetUtcNow.ToUnixTimeMilliseconds(),
+                          new Dictionary<string, object>
+                                {
+                                {"Message",$"OnComplete running at: {_endTime} ,executed in {_endTime.Subtract(_startTime).TotalMilliseconds}" }
+                                }
+                        );
+
+                    Logger.Info("StopSpan");
+                    ContextManager.StopSpan(_parentTraceSpan);
+
+                    if (this._parentStopwatch == null)
+                    {
+                        Logger.Info(string.Format("{0} end executed in {1} mSec ", _injection.Method.Name, _endTime.Subtract(_startTime).TotalMilliseconds - GlobalStopwatch.GetStopwatch().ChildElapsed - elapsed));
+
+                        GlobalStopwatch.Reset();
+                        _parentTraceSpan = null;
+                    }
+                    else
+                    {
+                        this._parentStopwatch.ChildElapsed += elapsed;
+                        this._parentStopwatch.ChildElapsed += GlobalStopwatch.GetStopwatch().ChildElapsed;
+                        Logger.Info(string.Format("{0} executed in {1} mSec ", _injection.Method.Name, _endTime.Subtract(_startTime).TotalMilliseconds - GlobalStopwatch.GetStopwatch().ChildElapsed - elapsed));
+
+                        GlobalStopwatch.SetStopwatch(this._parentStopwatch);
+                    }
+
+                }
             }
-        }
+            catch (Exception ex)
+            {
+                Logger.Debug("OnComplete ex:" + ex.Message);
+                Logger.Error(ex);
+            }
 
+        }
 
         ~ObjectValueInject()
         {

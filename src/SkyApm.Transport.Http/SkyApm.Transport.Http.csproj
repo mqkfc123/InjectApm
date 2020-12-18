@@ -57,6 +57,7 @@
     <Compile Include="Common\ExceptionHelpers.cs" />
     <Compile Include="Common\HttpHelper.cs" />
     <Compile Include="Common\SegmentV6Helpers.cs" />
+    <Compile Include="Common\TraceSegmentHelpers.cs" />
     <Compile Include="Entity\CLRMetric.cs" />
     <Compile Include="Entity\CLRMetricCollection.cs" />
     <Compile Include="Entity\KeyStringValuePair.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="V6\PingCaller.cs" />
     <Compile Include="V6\SegmentReporter.cs" />
     <Compile Include="V6\ServiceRegister.cs" />
+    <Compile Include="V6\TraceRepoter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SkyApm.Abstractions\SkyApm.Abstractions.csproj">
