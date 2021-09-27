@@ -8,7 +8,7 @@ namespace CInject.SampleWinform
         static void Main()
         {
             //InstrumentStartup startup = new InstrumentStartup();
-            //startup.StartAsync();
+            //startup.StartAsync() ;
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
