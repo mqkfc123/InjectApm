@@ -106,10 +106,13 @@ namespace CInject.Injections.Injectors
                             Logger.Debug($"_injection.Arguments[{parameters[i].Name}]: is null ");
                             continue;
                         }
-                        if (parameters[i].ParameterType.FullName == "System.Windows.Forms.Form")
+                        if (parameters[i].ParameterType.FullName == "System.Windows.Forms.Form"
+                            || parameters[i].ParameterType.FullName == "Com.Yilz.PubSystem.Common.Util.RefreshHandler"
+                            || parameters[i].ParameterType.FullName.Contains("DevComponents.DotNetBar"))
                         {
                             continue;
                         }
+
                         if (parameters[i].Name == "sender" || parameters[i].Name == "e")
                         {
                             continue;
